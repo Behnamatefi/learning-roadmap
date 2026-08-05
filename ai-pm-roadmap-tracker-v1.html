@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl" data-theme="light">
+<html lang="en" dir="ltr" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -46,6 +46,7 @@
   html[lang="en"] .stat-lbl{letter-spacing:.03em; text-transform:uppercase}
   html[lang="en"] .step-eyebrow{letter-spacing:.1em; text-transform:uppercase}
   html[lang="en"] .title{letter-spacing:-.02em}
+  html[lang="en"] .theme-btn{letter-spacing:.06em; text-transform:uppercase}
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
@@ -63,8 +64,15 @@
   .topbar{display:flex; justify-content:space-between; align-items:center; gap:14px}
   .eyebrow{font-family:var(--mono); font-size:12px; color:var(--violet); font-weight:700; direction:ltr; display:inline-flex; gap:8px; align-items:center}
   .eyebrow::before{content:""; width:6px; height:6px; background:var(--sig)}
-  .theme-btn{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line-strong); border-radius:999px; padding:7px 14px; transition:.16s}
-  .theme-btn:hover{color:var(--ink); border-color:var(--violet-line)}
+  /* Segmented-toggle chrome, adapted from .mi-theme/.mi-theme__opt (MoM 2026-08-05):
+     sunken fill, hairline (no border-color change), sharp corners, mono micro
+     label, tertiary→primary on hover, a press-scale confirm — no background
+     transition, the fill snaps rather than fades. */
+  .theme-btn{appearance:none; cursor:pointer; font-family:var(--mono); font-weight:700; font-size:12px; color:var(--muted-2); background:var(--card2); border:1px solid var(--line); border-radius:0; padding:8px 14px; transition:color .14s ease, transform .1s ease}
+  .theme-btn:active{transform:scale(.97)}
+  @media (hover:hover) and (pointer:fine){
+    .theme-btn:hover{color:var(--ink)}
+  }
   .topbar-actions{display:flex; gap:8px; align-items:center}
   .title{font-family:var(--display); font-weight:800; font-size:33px; line-height:1.2; margin:14px 0 6px}
   .title .pop{color:var(--violet)}
@@ -746,7 +754,7 @@ const TOOLS = [
 
 /* ==================== i18n ==================== */
 const KEY_LANG="pm-roadmap-lang";
-let lang="fa";
+let lang="en";
 const locNum = s => lang==="fa" ? toFa(s) : String(s);
 
 const STR={

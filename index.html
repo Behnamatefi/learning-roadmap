@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl" data-theme="light">
+<html lang="en" dir="ltr" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,6 +44,7 @@
   html[lang="en"] .rt-idx{letter-spacing:.1em}
   html[lang="en"] .rt-stat{letter-spacing:.01em}
   html[lang="en"] .title{letter-spacing:-.02em}
+  html[lang="en"] .theme-btn{letter-spacing:.06em; text-transform:uppercase}
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
@@ -55,14 +56,23 @@
   .num{font-feature-settings:"tnum" 1}
   :focus-visible{outline:2px solid var(--sig); outline-offset:2px}
 
+  /* Whole-page background layer — fixed to the viewport so the trail is live
+     everywhere you look, not just over the header, and stays put on scroll. */
+  .cursor-fx{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0; display:block; width:100vw; height:100vh}
+
   /* Header */
-  header{position:relative; z-index:0}
-  .cursor-fx{position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:0; display:block; width:100%; height:100%; border-radius:8px}
   .topbar{display:flex; justify-content:space-between; align-items:center; gap:14px}
   .eyebrow{font-family:var(--mono); font-size:12px; color:var(--violet); font-weight:700; direction:ltr; display:inline-flex; gap:8px; align-items:center}
   .eyebrow::before{content:""; width:6px; height:6px; background:var(--sig)}
-  .theme-btn{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line-strong); border-radius:999px; padding:7px 14px; transition:.16s}
-  .theme-btn:hover{color:var(--ink); border-color:var(--violet-line)}
+  /* Segmented-toggle chrome, adapted from .mi-theme/.mi-theme__opt (MoM 2026-08-05):
+     sunken fill, hairline (no border-color change), sharp corners, mono micro
+     label, tertiary→primary on hover, a press-scale confirm — no background
+     transition, the fill snaps rather than fades. */
+  .theme-btn{appearance:none; cursor:pointer; font-family:var(--mono); font-weight:700; font-size:12px; color:var(--muted-2); background:var(--card2); border:1px solid var(--line); border-radius:0; padding:8px 14px; transition:color .14s ease, transform .1s ease}
+  .theme-btn:active{transform:scale(.97)}
+  @media (hover:hover) and (pointer:fine){
+    .theme-btn:hover{color:var(--ink)}
+  }
   .topbar-actions{display:flex; gap:8px; align-items:center}
   .title{font-family:var(--display); font-weight:800; font-size:33px; line-height:1.2; margin:14px 0 6px}
   .sub{color:var(--muted); font-size:15px; max-width:60ch; margin:0}
@@ -98,11 +108,6 @@
     .route:hover .rt-go{transform:translateX(calc(4px * var(--dir))); color:var(--sig)}
   }
 
-  .footer{margin-top:34px; border-top:1px solid var(--line); padding-top:16px}
-  .foot-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap}
-  .note{color:var(--muted); font-size:12px; max-width:54ch}
-  .footer .note{margin:0}
-
   @media (max-width:640px){
     .title{font-size:26px}
     .routes{grid-template-columns:1fr}
@@ -111,9 +116,9 @@
 </style>
 </head>
 <body>
+<canvas class="cursor-fx" id="cursorFx" aria-hidden="true"></canvas>
 <div class="wrap">
   <header>
-    <canvas class="cursor-fx" id="cursorFx" aria-hidden="true"></canvas>
     <div class="topbar">
       <div class="eyebrow" id="eyebrow">Learning Roadmaps · نقشه‌های راهِ یادگیری</div>
       <div class="topbar-actions">
@@ -126,12 +131,6 @@
   </header>
 
   <main class="routes" id="routes" aria-label="نقشه‌های راه"></main>
-
-  <div class="footer">
-    <div class="foot-row">
-      <p class="note" id="footNote">زبان و حالتِ رنگ خودکار ذخیره می‌شوند.</p>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -264,7 +263,7 @@ if(!window.storage){
 /* ==================== i18n ==================== */
 const KEY_THEME="router-theme";
 const KEY_LANG="router-lang";
-let lang="fa";
+let lang="en";
 const locNum = s => lang==="fa" ? toFa(s) : String(s);
 
 const STR={
@@ -275,8 +274,7 @@ const STR={
   pageSub:"دو نقشهٔ راهِ مستقل و دوزبانه — یکی را انتخاب کن.",
   dark:"حالت تیره", light:"حالت روشن",
   routesLabel:"نقشه‌های راه",
-  units:{levels:"سطح", tasks:"کار", cases:"کیس‌استادی", books:"کتاب", tools:"ابزار", ui:"تمرینِ بازسازیِ UI"},
-  footNote:"زبان و حالتِ رنگ خودکار ذخیره می‌شوند."
+  units:{levels:"سطح", tasks:"کار", cases:"کیس‌استادی", books:"کتاب", tools:"ابزار", ui:"تمرینِ بازسازیِ UI"}
  },
  en:{
   docTitle:"Learning Roadmaps",
@@ -285,8 +283,7 @@ const STR={
   pageSub:"Two self-contained, bilingual roadmaps — pick one.",
   dark:"Dark mode", light:"Light mode",
   routesLabel:"Roadmaps",
-  units:{levels:"levels", tasks:"tasks", cases:"case studies", books:"books", tools:"tools", ui:"UI rebuild exercises"},
-  footNote:"Language and theme are saved automatically."
+  units:{levels:"levels", tasks:"tasks", cases:"case studies", books:"books", tools:"tools", ui:"UI rebuild exercises"}
  }
 };
 const S=k=>STR[lang][k];
@@ -382,7 +379,6 @@ function applyLang(){
   document.getElementById("eyebrow").textContent=S("eyebrow");
   document.getElementById("pageTitle").textContent=S("pageTitle");
   document.getElementById("pageSub").textContent=S("pageSub");
-  document.getElementById("footNote").textContent=S("footNote");
   applyTheme(document.documentElement.getAttribute("data-theme")||"light");
   renderRoutes();
 }
