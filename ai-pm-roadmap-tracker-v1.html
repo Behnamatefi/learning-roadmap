@@ -1,0 +1,1260 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نقشهٔ راهِ مدیریتِ پروژه — از صفر تا مدیرِ پروژه‌های AI</title>
+<script>try{document.documentElement.setAttribute('data-theme',(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F4F8; --card:#FFFFFF; --ink:#1B1B22; --line:#E7E6EC; --line-2:#EFEEF3;
+    --muted:#6E6E7A; --muted-2:#9A9AA6;
+    --violet:#5B3DF5; --coral:#FF5A3C; --green:#15A86B; --amber:#E8932A;
+    --violet-soft:rgba(91,61,245,.10); --violet-line:rgba(91,61,245,.28);
+    --green-soft:rgba(21,168,107,.12); --green-line:rgba(21,168,107,.40);
+    --coral-soft:rgba(255,90,60,.10); --coral-line:rgba(255,90,60,.30);
+    --amber-soft:rgba(232,147,42,.12); --amber-line:rgba(232,147,42,.32);
+    --prompt-text:#34307e;
+    --shadow:0 10px 28px -22px rgba(27,27,34,.22);
+    --node-track:#E4E3EA;
+    --display:'Vazirmatn',system-ui,sans-serif; --body:'Vazirmatn',system-ui,sans-serif;
+    --r:16px;
+  }
+  html[data-theme="dark"]{
+    --paper:#0F1018; --card:#171922; --ink:#ECEDF5; --line:#2A2C3A; --line-2:#22232E;
+    --muted:#9EA0B4; --muted-2:#6A6D80;
+    --violet:#8A78FF; --coral:#FF7A60; --green:#2BD68C; --amber:#F0A848;
+    --violet-soft:rgba(138,120,255,.14); --violet-line:rgba(138,120,255,.34);
+    --green-soft:rgba(43,214,140,.14); --green-line:rgba(43,214,140,.42);
+    --coral-soft:rgba(255,122,96,.14); --coral-line:rgba(255,122,96,.32);
+    --amber-soft:rgba(240,168,72,.14); --amber-line:rgba(240,168,72,.34);
+    --prompt-text:#D2CCFF;
+    --shadow:0 14px 34px -20px rgba(0,0,0,.65);
+    --node-track:#2A2C3A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(820px 480px at 100% -8%, var(--violet-soft), transparent 60%),
+      radial-gradient(720px 460px at -8% 108%, var(--coral-soft), transparent 55%),
+      var(--paper);
+    color:var(--ink); font-family:var(--body); line-height:1.78;
+    -webkit-font-smoothing:antialiased; min-height:100vh; transition:background .3s, color .3s;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:26px 20px 80px}
+  .num{font-feature-settings:"tnum" 1}
+
+  /* Header */
+  .topbar{display:flex; justify-content:space-between; align-items:center; gap:14px}
+  .eyebrow{font-family:'Space Grotesk',monospace; font-size:12px; letter-spacing:.14em; color:var(--violet); font-weight:700; text-transform:uppercase; direction:ltr; display:inline-flex; gap:8px; align-items:center}
+  .eyebrow::before{content:""; width:22px; height:2px; background:var(--violet)}
+  .theme-btn{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:7px 14px; transition:.16s}
+  .theme-btn:hover{color:var(--ink); border-color:var(--violet-line)}
+  .theme-btn:focus-visible{outline:2px solid var(--violet); outline-offset:2px}
+  .topbar-actions{display:flex; gap:8px; align-items:center}
+  .title{font-family:var(--display); font-weight:800; font-size:33px; line-height:1.2; margin:14px 0 6px; letter-spacing:-.01em}
+  .title .pop{color:var(--violet)}
+  .sub{color:var(--muted); font-size:15px; max-width:60ch; margin:0}
+
+  /* Summary */
+  .summary{margin-top:24px; background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:22px; box-shadow:var(--shadow)}
+  .hero{display:flex; align-items:center; gap:18px; flex-wrap:wrap}
+  .hero .big{font-weight:800; font-size:46px; line-height:1; color:var(--violet)}
+  .hero .big.zero{color:var(--ink)}
+  .hero .lbl{color:var(--muted); font-size:13px; font-weight:600; margin-top:5px}
+  .hero-bar{flex:1 1 220px; height:11px; background:var(--paper); border:1px solid var(--line); border-radius:999px; overflow:hidden; min-width:170px}
+  .hero-bar i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--violet),color-mix(in srgb,var(--violet) 55%,#ffffff)); transition:width .55s cubic-bezier(.2,.7,.2,1)}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px}
+  .stat{background:var(--paper); border:1px solid var(--line); border-radius:13px; padding:14px 16px}
+  .stat-lbl{color:var(--muted); font-size:12.5px; font-weight:700; margin-bottom:6px}
+  .stat-val{font-size:14px; color:var(--muted)}
+  .stat-val b{font-size:24px; font-weight:800; color:var(--ink); margin-inline-end:3px}
+  .stat-val small{font-size:12px; color:var(--muted-2); margin-inline-start:4px}
+  .mini{height:5px; background:var(--line); border-radius:999px; overflow:hidden; margin-top:10px}
+  .mini i{display:block; height:100%; width:0; background:var(--green); transition:width .5s ease}
+
+  /* Levels (spine) */
+  #levels{margin-top:22px}
+  .level{display:flex; gap:16px}
+  .rail{flex:0 0 52px; display:flex; flex-direction:column; align-items:center}
+  .node{position:relative; width:52px; height:52px; border-radius:50%; background:conic-gradient(var(--green) calc(var(--p)*1%), var(--node-track) 0); flex:0 0 auto}
+  .node::after{content:""; position:absolute; inset:5px; border-radius:50%; background:var(--card)}
+  .node .lv{position:absolute; inset:0; display:grid; place-items:center; font-weight:800; font-size:17px; color:var(--ink); z-index:1}
+  .level.complete .node .lv{color:var(--green)}
+  .node-pct{font-size:10.5px; font-weight:700; color:var(--muted-2); margin-top:5px}
+  .level.complete .node-pct{color:var(--green)}
+  .rail .line{flex:1; width:2px; background:var(--line); margin-top:7px; min-height:18px; border-radius:2px}
+  .level:last-child .rail .line{display:none}
+  .level.complete .rail .line{background:var(--green-line)}
+
+  .lcard{flex:1 1 auto; min-width:0; background:var(--card); border:1px solid var(--line); border-radius:var(--r); margin-bottom:14px; overflow:hidden; box-shadow:var(--shadow)}
+  .l-head{display:flex; align-items:center; gap:12px; padding:15px 18px; cursor:pointer; width:100%; text-align:start; background:none; border:0; color:inherit; font-family:var(--body)}
+  .l-head:focus-visible{outline:2px solid var(--violet); outline-offset:-2px}
+  .l-titles{flex:1 1 auto; min-width:0}
+  .l-name{font-family:var(--display); font-weight:800; font-size:17px; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .l-star{font-size:11px; font-weight:700; color:var(--amber); background:var(--amber-soft); border:1px solid var(--amber-line); padding:2px 8px; border-radius:999px}
+  .l-meta{display:flex; gap:11px; flex-wrap:wrap; color:var(--muted); font-size:12.5px; margin-top:3px}
+  .l-bar{flex:0 0 76px; height:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; overflow:hidden}
+  .l-bar i{display:block; height:100%; width:0; background:var(--green); transition:width .5s ease}
+  .chev{color:var(--muted-2); transition:transform .25s; flex:0 0 auto}
+  .lcard.open .chev{transform:rotate(180deg)}
+  .l-body{padding:0 18px 8px; border-top:1px solid var(--line-2); display:none}
+  .lcard.open .l-body{display:block}
+  .l-intro{color:var(--muted); font-size:13.5px; padding:14px 0 12px; border-bottom:1px dashed var(--line); margin-bottom:4px}
+  .l-intro b{color:var(--ink); font-weight:700}
+
+  /* Items */
+  .item{display:flex; align-items:flex-start; gap:12px; padding:15px 0; border-bottom:1px solid var(--line-2)}
+  .item:last-child{border-bottom:0}
+  .check{flex:0 0 auto; margin-top:2px; width:23px; height:23px; border-radius:7px; border:1.5px solid var(--line); background:var(--card); cursor:pointer; display:grid; place-items:center; transition:.16s; padding:0; color:var(--green)}
+  .check:hover{border-color:var(--green-line)}
+  .check:focus-visible{outline:2px solid var(--violet); outline-offset:2px}
+  .check svg{opacity:0; transform:scale(.5); transition:.16s}
+  .item.done .check{background:var(--green-soft); border-color:var(--green-line)}
+  .item.done .check svg{opacity:1; transform:scale(1)}
+  .it-main{flex:1 1 auto; min-width:0}
+  .it-title{font-size:14.5px; font-weight:700; transition:.16s}
+  .item.done .it-title{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--muted-2)}
+  .it-desc{color:var(--muted); font-size:13px; line-height:1.72; margin-top:5px}
+  .it-desc b{color:var(--ink)}
+  .prompt-box{margin-top:10px; background:var(--violet-soft); border:1px solid var(--violet-line); border-radius:10px; padding:11px 13px; font-size:12.5px; line-height:1.75; color:var(--prompt-text); white-space:pre-wrap}
+  .sum-box{margin-top:10px; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:11px 13px; font-size:12.5px; line-height:1.78; color:var(--muted)}
+  .sum-box b{color:var(--ink)}
+  .it-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px}
+  .chip{font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted)}
+  .chip.concept{color:var(--violet); border-color:var(--violet-line); background:var(--violet-soft)}
+  .chip.practice{color:var(--amber); border-color:var(--amber-line); background:var(--amber-soft)}
+  .chip.project{color:var(--green); border-color:var(--green-line); background:var(--green-soft)}
+  .chip.ai{color:var(--coral); border-color:var(--coral-line); background:var(--coral-soft)}
+  .btn{cursor:pointer; font-family:var(--body); font-size:12.5px; font-weight:700; color:var(--violet); background:var(--card); text-decoration:none; border:1px solid var(--line); padding:6px 12px; border-radius:9px; transition:.16s; white-space:nowrap; display:inline-block}
+  .btn:hover{border-color:var(--violet); background:var(--violet-soft)}
+  .btn:focus-visible{outline:2px solid var(--violet); outline-offset:2px}
+  .btn.vid{color:var(--coral)} .btn.vid:hover{border-color:var(--coral); background:var(--coral-soft)}
+  .btn.copy{color:var(--amber); border-style:dashed} .btn.copy:hover{border-color:var(--amber); background:var(--amber-soft)}
+
+  /* Sections & tools */
+  .sec-head{margin:38px 0 4px; font-family:var(--display); font-weight:800; font-size:22px; display:flex; align-items:center; gap:10px}
+  .sec-head .dot{width:9px; height:9px; border-radius:50%; background:var(--coral)}
+  .sec-sub{color:var(--muted); font-size:13.5px; margin:0 0 16px; max-width:64ch}
+  .tools{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
+  .tool{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:15px 16px; box-shadow:var(--shadow)}
+  .tool-top{display:flex; align-items:center; justify-content:space-between; gap:8px}
+  .tool-name{font-family:var(--display); font-weight:800; font-size:15.5px}
+  .tcat{font-size:10.5px; font-weight:700; color:var(--violet); background:var(--violet-soft); border:1px solid var(--violet-line); padding:2px 8px; border-radius:999px; white-space:nowrap}
+  .tool-desc{color:var(--muted); font-size:12.5px; line-height:1.7; margin:9px 0 11px}
+  .tool-actions{display:flex; gap:8px; flex-wrap:wrap}
+
+  .footer{margin-top:34px}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap}
+  .note{color:var(--muted-2); font-size:12px; max-width:54ch}
+  .reset{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line); border-radius:9px; padding:8px 14px; transition:.16s}
+  .reset:hover{color:var(--coral); border-color:var(--coral-line)}
+  .reset:focus-visible{outline:2px solid var(--violet); outline-offset:2px}
+  .saved{font-size:11.5px; color:var(--muted-2)} .saved b{color:var(--green)}
+
+  /* Strips */
+  .lab-strip{display:flex; align-items:center; gap:16px; background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:14px; flex-wrap:wrap}
+  .lab-big{font-family:var(--display); font-weight:800; font-size:34px; line-height:1; color:var(--violet)}
+  .lab-big.zero{color:var(--ink)}
+  .lab-lbl{color:var(--muted); font-size:12.5px; font-weight:600; margin-top:5px}
+  .step-eyebrow{font-family:'Space Grotesk',monospace; font-size:10.5px; letter-spacing:.1em; color:var(--muted-2); font-weight:700; direction:ltr; text-transform:uppercase}
+
+  /* Section controller */
+  .panel[hidden]{display:none}
+  .panel > .sec-head:first-child{margin-top:22px}
+  .section-tabs{display:flex; gap:6px; flex-wrap:wrap; background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:6px; margin:22px 0 0; box-shadow:var(--shadow)}
+  .section-tab{flex:1 1 auto; min-width:118px; appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:13.5px; color:var(--muted); background:transparent; border:0; border-radius:11px; padding:11px 14px; transition:.16s; display:flex; align-items:center; justify-content:center; gap:8px}
+  .section-tab[aria-selected="true"]{color:#fff; background:var(--violet)}
+  .section-tab:hover{color:var(--ink)} .section-tab[aria-selected="true"]:hover{color:#fff}
+  .section-tab:focus-visible{outline:2px solid var(--violet); outline-offset:2px}
+
+  @media (max-width:640px){
+    .title{font-size:26px}
+    .stats{grid-template-columns:1fr}
+    .tools{grid-template-columns:1fr}
+    .hero .big{font-size:38px}
+    .rail{flex-basis:42px}
+    .node{width:44px;height:44px}
+    .l-bar{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="topbar">
+      <div class="eyebrow" id="eyebrow">PM Quest · نقشهٔ راهِ مدیریتِ پروژه</div>
+      <div class="topbar-actions">
+        <button class="theme-btn" id="langBtn" aria-label="Switch language">English</button>
+        <button class="theme-btn" id="themeBtn">حالت تیره</button>
+      </div>
+    </div>
+    <h1 class="title" id="pageTitle">از <span class="pop">صفر</span> تا مدیرِ پروژه‌های <span class="pop">AI</span></h1>
+    <p class="sub" id="pageSub">یک مسیرِ سطح‌به‌سطح برای کسی که هیچ پیش‌زمینهٔ فنی، طراحی یا محصولی ندارد: اول مفاهیمِ پایهٔ مدیریتِ پروژه، بعد برنامه‌ریزی و اجرا، بعد اجایل و مهارت‌های انسانی، و در نهایت سوادِ AI و مدیریتِ پروژه‌های هوشِ مصنوعی. هر سطح را که کامل کنی، گرهِ بعدیِ مسیر روشن می‌شود.</p>
+  </header>
+
+  <nav class="section-tabs" id="sectionTabs" role="tablist" aria-label="بخش‌های اصلی"></nav>
+
+  <div id="panel-roadmap" class="panel" role="tabpanel" aria-labelledby="stab-roadmap">
+  <section class="summary" aria-label="خلاصهٔ پیشرفت">
+    <div class="hero">
+      <div>
+        <div class="big zero num" id="kpiPct">۰٪</div>
+        <div class="lbl" id="kpiLbl">پیشرفتِ کلِ مسیر</div>
+      </div>
+      <div class="hero-bar"><i id="heroFill"></i></div>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-lbl" id="statLblH">ساعتِ یادگیری</div>
+        <div class="stat-val num"><b id="hDone">۰</b> <span id="hOf">از</span> <span id="hTot" class="num">۰</span> <small id="hUnit">ساعت</small></div>
+        <div class="mini"><i id="hBar"></i></div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl" id="statLblM">سطح‌های کامل‌شده</div>
+        <div class="stat-val num"><b id="mDone">۰</b> <span id="mOf">از</span> <span id="mTot" class="num">۰</span> <small id="mUnit">سطح</small></div>
+        <div class="mini"><i id="mBar"></i></div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl" id="statLblI">کارهای انجام‌شده</div>
+        <div class="stat-val num"><b id="iDone">۰</b> <span id="iOf">از</span> <span id="iTot" class="num">۰</span> <small id="iUnit">مورد</small></div>
+        <div class="mini"><i id="iBar"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <main id="levels"></main>
+  </div>
+
+  <div id="panel-cases" class="panel" role="tabpanel" aria-labelledby="stab-cases" hidden>
+  <h2 class="sec-head"><span class="dot"></span><span id="casesHeadTxt">کیس‌استادی‌های واقعیِ پروژه‌های AI</span></h2>
+  <p class="sec-sub" id="casesSub">هیچ درسی قوی‌تر از پروژه‌های واقعی نیست. این‌ها ماجراهای واقعی و مستندِ پروژه‌های هوشِ مصنوعی در شرکت‌های بزرگ‌اند — شکست‌های چند صد میلیون دلاری و موفقیت‌های اندازه‌گیری‌شده. هر کدام را بخوان، لینکِ مقالهٔ اصلی را ببین، و «درسِ» آن را به خاطر بسپار؛ بعد تیک بزن. این پرونده‌ها همان چیزی‌اند که در مصاحبه و جلسه، تو را از بقیه جدا می‌کنند.</p>
+
+  <div class="lab-strip">
+    <div>
+      <div class="lab-big zero num" id="casePct">۰</div>
+      <div class="lab-lbl" id="caseLbl">بررسی‌شده از ۰</div>
+    </div>
+    <div class="hero-bar"><i id="caseFill"></i></div>
+  </div>
+
+  <div id="cases"></div>
+  </div>
+
+  <div id="panel-books" class="panel" role="tabpanel" aria-labelledby="stab-books" hidden>
+  <h2 class="sec-head"><span class="dot" style="background:var(--amber)"></span><span id="booksHeadTxt">کتابخانهٔ مدیرِ پروژه</span></h2>
+  <p class="sec-sub" id="booksSub">۹ کتاب به ترتیبِ پیشنهادیِ خواندن: پنج کتابِ اول پایه‌های مدیریتِ پروژه را می‌سازند و چهار کتابِ بعدی تو را به دنیای AI می‌برند. برای هر کتاب یک خلاصهٔ فشرده نوشته شده تا قبل از خریدن بدانی چه چیزی از آن می‌گیری — اما خلاصه جای کتاب را نمی‌گیرد. هر کدام را که تمام کردی تیک بزن.</p>
+
+  <div class="lab-strip">
+    <div>
+      <div class="lab-big zero num" id="bookPct">۰</div>
+      <div class="lab-lbl" id="bookLbl">خوانده‌شده از ۰</div>
+    </div>
+    <div class="hero-bar"><i id="bookFill"></i></div>
+  </div>
+
+  <div id="books"></div>
+  </div>
+
+  <div id="panel-tools" class="panel" role="tabpanel" aria-labelledby="stab-tools" hidden>
+  <h2 class="sec-head"><span class="dot" style="background:var(--violet)"></span><span id="toolsHeadTxt">جعبه‌ابزارِ مدیرِ پروژهٔ عصرِ AI</span></h2>
+  <p class="sec-sub" id="toolsSub">ابزارهایی که یک مدیرِ پروژه در ۲۰۲۶ باید بشناسد — از بردهای سادهٔ کانبان تا دستیارهای AI. لازم نیست همه را یاد بگیری؛ یکی از هر دسته کافی است. برای هرکدام لینکِ سایتِ رسمی و یک ویدیوی آموزشیِ دقیق گذاشته شده است.</p>
+  <div class="tools" id="tools"></div>
+  </div>
+
+  <div class="footer">
+    <div class="foot-row">
+      <p class="note" id="footNote">پیشرفت، زبان و حالتِ رنگ خودکار ذخیره می‌شوند. دکمه‌های ویدیو مستقیم به ویدیوی دقیق در یوتیوب لینک شده‌اند و مقاله‌ها به منبعِ اصلی.</p>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span class="saved" id="savedNote"></span>
+        <button class="reset" id="resetBtn">پاک‌کردن پیشرفت</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FA="۰۱۲۳۴۵۶۷۸۹";
+const toFa = s => String(s).replace(/[0-9]/g,d=>FA[+d]).replace(/\./g,"٫");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* storage shim: use localStorage when the artifact storage API is absent */
+if(!window.storage){
+  window.storage={
+    async get(k){ try{ return {value:localStorage.getItem(k)}; }catch(e){ return {value:null}; } },
+    async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  };
+}
+
+const LEVELS = [
+  {id:"L0",num:0,star:"شروع از صفر",name:"پروژه چیست؟ نقطهٔ صفر",
+   intro:"قبل از هر ابزار و هر روش، باید بفهمی «پروژه» اصلاً چیست و مدیرِ پروژه واقعاً چه کار می‌کند. خبرِ خوب: تو همین حالا هم پروژه مدیریت می‌کنی — مهمانی، اسباب‌کشی، سفر. این سطح همان تجربهٔ روزمره را به زبانِ حرفه‌ای ترجمه می‌کند و <b>هیچ پیش‌زمینه‌ای نمی‌خواهد</b>.",
+   items:[
+     {id:"L0a",kind:"concept",min:15,t:"پروژه چیست و چه چیزی پروژه نیست",
+      desc:"پروژه یعنی تلاشی موقت با شروع و پایانِ مشخص برای ساختنِ یک نتیجهٔ مشخص — برخلافِ کارِ روزمره و تکراری (عملیات). این تفاوتِ ساده تعیین می‌کند چه چیزی برنامه و پایان می‌خواهد و چه چیزی فقط روال است.",
+      resources:[{label:"مرجع: PMI — مدیریتِ پروژه چیست",url:"https://www.pmi.org/about/what-is-project-management"}]},
+     {id:"L0b",kind:"concept",min:15,t:"مثلثِ آهنین: محدوده، زمان، هزینه",
+      desc:"هر پروژه بینِ سه محدودیت گیر افتاده: چه چیزی می‌سازیم (محدوده)، تا کِی (زمان) و با چقدر پول (هزینه) — و کیفیت وسطِ این مثلث است. هنرِ مدیرِ پروژه معامله بینِ همین سه ضلع است؛ هر تغییری در یکی، بقیه را جابه‌جا می‌کند.",
+      resources:[{label:"ویکی‌پدیا: مثلثِ مدیریتِ پروژه",url:"https://en.wikipedia.org/wiki/Project_management_triangle"}]},
+     {id:"L0c",kind:"concept",min:12,t:"ذی‌نفعان: چه کسانی به پروژه‌ات کار دارند",
+      desc:"ذی‌نفع یعنی هر کسی که پروژه رویش اثر می‌گذارد یا روی پروژه اثر می‌گذارد: حامی، مشتری، تیم، حتی مخالفان. بیشترِ شکست‌ها نه از فنی‌بودن، بلکه از نادیده‌گرفتنِ آدم‌های کلیدی شروع می‌شوند.",
+      resources:[{label:"مرجع: ذی‌نفعِ پروژه (PMI)",url:"https://www.pmi.org/learning/library/stakeholder-management-task-8905"}]},
+     {id:"L0d",kind:"concept",min:12,t:"مدیرِ پروژه واقعاً چه‌کاره است",
+      desc:"مدیرِ پروژه نه رئیسِ همه است و نه متخصصِ فنی؛ کسی است که هدف را روشن نگه می‌دارد، آدم‌ها را هم‌جهت می‌کند، موانع را برمی‌دارد و خبرِ درست را به آدمِ درست می‌رساند. این نقش بیش از هر چیز مهارتِ ارتباط و نظم است — نه کدنویسی.",
+      resources:[]},
+     {id:"L0e",kind:"ai",min:10,t:"AI را به مربیِ سقراطیِ خودت تبدیل کن",
+      desc:"از همین اول، هوشِ مصنوعی را به‌جای منبعِ جوابِ آماده، به معلمی تبدیل کن که با سؤال‌هایش تو را به فکر وا می‌دارد. این پرامپت را کپی کن و سرِ هر درسِ این نقشهٔ راه به AI بده.",
+      prompt:"از این لحظه نقشِ یک مربیِ سخت‌گیر اما حمایتگرِ مدیریتِ پروژه را داری. قانون: هیچ‌وقت جوابِ مستقیم نده. وقتی مفهومی را می‌پرسم، اول با دو یا سه سؤالِ کوتاه از تجربهٔ روزمره‌ام (مهمانی، سفر، اسباب‌کشی) کمکم کن خودم به مفهوم برسم. اگر جوابم ناقص بود فقط بگو چه چیزی را از قلم انداختم. در پایانِ هر بخش یک سؤال بپرس تا مطمئن شوی واقعاً فهمیده‌ام. موضوعِ امروز: ...",
+      resources:[]},
+     {id:"L0f",kind:"project",min:60,t:"پروژه: یک پروژهٔ شخصی را «رسمی» مدیریت کن",
+      desc:"یک کارِ واقعیِ پیشِ رو (مثلاً یک مهمانی یا سفرِ آخرِ هفته) را انتخاب کن و برایش بنویس: هدف در یک جمله، سه ذی‌نفع، محدوده/زمان/هزینه، و فهرستِ کارها. همین یک صفحه، اولین سندِ مدیریتِ پروژهٔ توست.",
+      resources:[]}
+   ]},
+
+  {id:"L1",num:1,star:"",name:"چرخهٔ حیات و برنامه‌ریزی",
+   intro:"هر پروژه یک مسیرِ تکرارشونده دارد: <b>آغاز، برنامه‌ریزی، اجرا، پایش، بستن</b>. این سطح اسکلتِ کارِ توست: منشورِ پروژه بنویسی، کارِ بزرگ را به قطعاتِ کوچک بشکنی، تخمین بزنی و یک زمان‌بندیِ واقعی بسازی — روی کاغذ، بدونِ هیچ نرم‌افزارِ پیچیده‌ای.",
+   items:[
+     {id:"L1a",kind:"concept",min:12,t:"پنج فازِ چرخهٔ حیاتِ پروژه",
+      desc:"آغاز (چرا و چه چیزی)، برنامه‌ریزی (چطور و کِی)، اجرا (ساختن)، پایش و کنترل (آیا طبقِ نقشه‌ایم؟) و بستن (تحویل و درس‌ها). این نقشهٔ ذهنی به تو می‌گوید هر لحظه در کجای مسیر ایستاده‌ای و قدمِ بعدی چیست.",
+      resources:[{label:"مرجع: چرخهٔ حیاتِ پروژه (PMI)",url:"https://www.pmi.org/learning/library/project-life-cycle-phases-2042"}]},
+     {id:"L1b",kind:"practice",min:20,t:"منشورِ پروژه: سندِ یک‌صفحه‌ایِ شروع",
+      desc:"منشور (Charter) یک صفحه است که می‌گوید: چرا این پروژه، چه چیزی موفقیت است، چه کسی حامی است و مرزها کجاست. همین یک صفحه جلوی بزرگ‌ترین قاتلِ پروژه‌ها — «هرکس فکر می‌کرد چیزِ دیگری قرار است ساخته شود» — را می‌گیرد.",
+      resources:[]},
+     {id:"L1c",kind:"practice",min:20,t:"شکستنِ کار: WBS",
+      desc:"ساختارِ شکستِ کار یعنی نتیجهٔ بزرگ را پله‌پله به قطعه‌های کوچکِ قابلِ تحویل بشکنی تا هیچ چیزِ بزرگ و ترسناکی باقی نماند. قانونِ طلایی: اگر یک قطعه را نمی‌توانی تخمین بزنی، هنوز به اندازهٔ کافی نشکسته‌ای.",
+      resources:[]},
+     {id:"L1d",kind:"concept",min:15,t:"تخمین، بافر و مایل‌استون",
+      desc:"آدم‌ها ذاتاً خوش‌بین تخمین می‌زنند؛ برای همین به بافر (حاشیهٔ خطا) و مایل‌استون (ایستگاه‌های قابلِ بررسی) نیاز داری. یاد بگیر تخمین را بازه بدهی نه عدد، و پیشرفت را با تحویل‌های واقعی بسنجی نه با «۹۰٪ تمام شده».",
+      resources:[]},
+     {id:"L1e",kind:"practice",min:25,t:"زمان‌بندی و گانت‌چارت",
+      desc:"گانت نمایشِ تصویریِ کارها روی محورِ زمان است: چه چیزی، کِی، به چه چیزی وابسته. یک‌بار که با دست یا ابزارِ ساده بسازی‌اش، مفهومِ «مسیرِ بحرانی» — زنجیره‌ای که کوچک‌ترین تأخیرش کلِ پروژه را عقب می‌اندازد — برایت ملموس می‌شود.",
+      resources:[]},
+     {id:"L1f",kind:"ai",min:15,t:"تمرینِ AI: منشور بساز و بازجویی‌اش کن",
+      desc:"از AI بخواه برای پروژهٔ شخصی‌ات پیش‌نویسِ منشور بسازد — بعد خودت آن را نقد کن. هدف این است که یاد بگیری خروجیِ AI نقطهٔ شروعِ فکرِ توست، نه سندِ نهایی.",
+      prompt:"می‌خواهم برای این پروژه یک منشورِ یک‌صفحه‌ای بنویسم: «[توضیحِ پروژه]». اول پنج سؤالی که برای نوشتنِ منشور باید جواب بدهم را از من بپرس. بعد از جواب‌هایم، پیش‌نویسِ منشور را در قالبِ: هدف، معیارِ موفقیت، ذی‌نفعانِ کلیدی، محدوده (هست/نیست)، ریسک‌های اصلی و مایل‌استون‌ها بنویس. در پایان سه نقطهٔ ضعفِ همین منشوری که خودت نوشتی را صادقانه فهرست کن.",
+      resources:[]},
+     {id:"L1g",kind:"project",min:120,t:"پروژه: برنامهٔ کاملِ یک رویداد",
+      desc:"برای یک رویدادِ فرضی (مثلاً مراسمِ رونماییِ یک محصولِ کوچک) پکیجِ کامل بساز: منشورِ یک‌صفحه‌ای، WBS با حداقل ۱۵ قطعه، تخمین با بافر، و گانتِ ساده با سه مایل‌استون. این پکیج اولین نمونه‌کارِ واقعیِ توست.",
+      resources:[]}
+   ]},
+
+  {id:"L2",num:2,star:"",name:"اجرا: ریسک، ارتباط، پیگیری",
+   intro:"برنامه فقط شروعِ ماجراست؛ پروژه‌ها در <b>اجرا</b> زنده می‌مانند یا می‌میرند. این سطح چهار عادتِ حیاتیِ اجرا را می‌سازد: دیدنِ ریسک قبل از وقوع، گزارشِ وضعیتِ شفاف، جلسه‌ای که به نتیجه می‌رسد، و مهارِ هیولایی به اسمِ خزشِ محدوده.",
+   items:[
+     {id:"L2a",kind:"concept",min:20,t:"مدیریتِ ریسک و دفترِ RAID",
+      desc:"ریسک یعنی چیزی که هنوز اتفاق نیفتاده اما اگر بیفتد پروژه را می‌لرزاند. دفترِ RAID (ریسک‌ها، اقدام‌ها، مسئله‌ها، وابستگی‌ها) ساده‌ترین ابزارِ حرفه‌ای است: هر ریسک را با احتمال، اثر و «مالک» ثبت کن و هفتگی مرور کن.",
+      resources:[]},
+     {id:"L2b",kind:"practice",min:15,t:"گزارشِ وضعیت و برنامهٔ ارتباطی",
+      desc:"گزارشِ وضعیتِ خوب سه سؤال را جواب می‌دهد: کجاییم، چه چیزی جلویمان را گرفته، و چه کمکی می‌خواهیم — به زبانی که مدیرِ ارشد در ۶۰ ثانیه بفهمد. برنامهٔ ارتباطی هم می‌گوید چه کسی، چه خبری را، با چه فاصله‌ای می‌گیرد.",
+      resources:[]},
+     {id:"L2c",kind:"practice",min:12,t:"جلسه‌ای که به نتیجه می‌رسد",
+      desc:"جلسهٔ بی‌دستورِ کار، گران‌ترین اتلافِ سازمان است. فرمولِ ساده: هدفِ مشخص + دستورِ کارِ زمان‌دار + صورت‌جلسه با «تصمیم‌ها و اقدام‌ها با مالک و مهلت». همین سه قلم تو را از اکثرِ جلسه‌روها جلو می‌اندازد.",
+      resources:[]},
+     {id:"L2d",kind:"concept",min:15,t:"خزشِ محدوده و مدیریتِ تغییر",
+      desc:"خزشِ محدوده یعنی «فقط همین یک چیزِ کوچک را هم اضافه کن» — و صد بارِ بعدی‌اش. تغییر بد نیست؛ تغییرِ ثبت‌نشده بد است. یاد بگیر هر درخواست را با اثرش روی زمان/هزینه روی میز بگذاری تا تصمیم، آگاهانه گرفته شود.",
+      resources:[]},
+     {id:"L2e",kind:"concept",min:12,t:"بودجهٔ پروژه به زبانِ آدمیزاد",
+      desc:"بودجه چیزی نیست جز تخمینِ هزینهٔ کارها به‌علاوهٔ ذخیرهٔ احتیاطی، و پایشِ «چقدر خرج شد در برابرِ چقدر پیش رفتیم». همین‌که تفاوتِ این دو را ماهانه گزارش کنی، از بیشترِ مدیرانِ تازه‌کار جلوتری.",
+      resources:[]},
+     {id:"L2f",kind:"ai",min:15,t:"تمرینِ AI: دفترِ ریسک بساز و قضاوت کن",
+      desc:"AI در تولیدِ فهرستِ ریسک فوق‌العاده است — و در اولویت‌بندی‌اش برای «پروژهٔ خاصِ تو» ضعیف. بگذار او فهرست بسازد و تو مثلِ مالکِ پروژه، قضاوت و انتخاب کن.",
+      prompt:"این پروژهٔ من است: «[توضیح]». پانزده ریسکِ محتمل برایش فهرست کن و برای هرکدام احتمال (کم/متوسط/زیاد)، شدتِ اثر و یک اقدامِ پیشگیرانه بده. بعد از من بپرس کدام پنج‌تا را واقعی‌تر می‌دانم و چرا؛ سپس انتخابِ من را نقد کن: کدام ریسکِ مهم را دستِ‌کم گرفته‌ام؟",
+      resources:[]},
+     {id:"L2g",kind:"project",min:120,t:"پروژه: دو هفته اجرا با گزارشِ هفتگی",
+      desc:"همان پروژهٔ سطحِ ۱ را دو هفته واقعاً اجرا کن: دفترِ RAID نگه دار، هفته‌ای یک گزارشِ وضعیتِ یک‌صفحه‌ای بنویس و یک درخواستِ تغییرِ واقعی را ثبت و ارزیابی کن. اجرا همان‌جایی است که یاد گرفتنِ واقعی اتفاق می‌افتد.",
+      resources:[]}
+   ]},
+
+  {id:"L3",num:3,star:"زبانِ تیم‌های مدرن",name:"اجایل: اسکرام و کانبان",
+   intro:"تقریباً همهٔ تیم‌های نرم‌افزاری و AI با <b>اجایل</b> کار می‌کنند: به‌جای برنامهٔ کاملِ از پیش، حلقه‌های کوتاهِ ساختن، نشان‌دادن و یادگرفتن. اگر زبانِ اسکرام و کانبان را بلد نباشی، در جلسه‌های این تیم‌ها غریبه‌ای — و این سطح دقیقاً همین زبان را یادت می‌دهد.",
+   items:[
+     {id:"L3a",kind:"concept",min:15,t:"آبشاری در برابرِ اجایل",
+      desc:"آبشاری یعنی اول همه‌چیز را کامل برنامه‌ریزی کن بعد بساز؛ اجایل یعنی در چرخه‌های کوتاه بساز، نشان بده و مسیر را اصلاح کن. هیچ‌کدام مقدس نیستند — پروژهٔ ساختمان آبشاری می‌خواهد، محصولِ AI اجایل. مهم این است که بدانی کِی کدام.",
+      resources:[{label:"مانیفستِ اجایل",url:"https://agilemanifesto.org/"},{label:"مرجع: Atlassian Agile Coach",url:"https://www.atlassian.com/agile"}]},
+     {id:"L3b",kind:"concept",min:25,t:"اسکرام: نقش‌ها، رویدادها، مصنوعات",
+      desc:"اسکرام رایج‌ترین چارچوبِ اجایل است: سه نقش (مالکِ محصول، اسکرام‌مستر، تیم)، رویدادهای منظم (اسپرینت، پلنینگ، استندآپِ روزانه، ریویو، رتروسپکتیو) و مصنوعات (بک‌لاگ و اینکریمنت). راهنمای رسمی‌اش فقط ۱۴ صفحه است — بخوانش.",
+      resources:[{label:"راهنمای رسمی: Scrum Guide",url:"https://scrumguides.org/"}]},
+     {id:"L3c",kind:"concept",min:15,t:"کانبان: جریانِ کار را ببین",
+      desc:"کانبان ساده‌ترین سیستمِ دنیاست: ستون‌های «انجام‌نشده / در حالِ انجام / تمام‌شده»، و یک قانونِ طلایی — سقفِ کارِ هم‌زمان (WIP limit). دیدنِ کار روی برد و محدودکردنِ کارِ هم‌زمان، به‌تنهایی نصفِ مشکلاتِ تیم را حل می‌کند.",
+      resources:[{label:"مرجع: کانبان (Atlassian)",url:"https://www.atlassian.com/agile/kanban"}]},
+     {id:"L3d",kind:"concept",min:15,t:"یوزر استوری و بک‌لاگ",
+      desc:"یوزر استوری کار را از زاویهٔ آدمِ واقعی تعریف می‌کند: «به‌عنوانِ [کاربر]، می‌خواهم [کار]، تا [ارزش]». بک‌لاگ هم فهرستِ اولویت‌بندی‌شدهٔ همین استوری‌هاست. این قالبِ ساده، گفتگوی تیمِ فنی و غیرفنی را ممکن می‌کند.",
+      resources:[{label:"مرجع: یوزر استوری (Atlassian)",url:"https://www.atlassian.com/agile/project-management/user-stories"}]},
+     {id:"L3e",kind:"practice",min:30,t:"تمرین: بردِ کانبانِ خودت را بساز",
+      desc:"در Trello (یا هر ابزارِ رایگان) یک برد با ستون‌های Backlog / Doing / Done بساز و کارهای همین نقشهٔ راه را واردش کن؛ سقفِ Doing را سه بگذار. از امروز یادگیری‌ات را با همان ابزاری مدیریت می‌کنی که تیم‌های واقعی استفاده می‌کنند.",
+      resources:[]},
+     {id:"L3f",kind:"ai",min:15,t:"تمرینِ AI: رتروسپکتیوِ شخصی",
+      desc:"رتروسپکتیو قلبِ یادگیری در اجایل است: چه خوب بود، چه بد بود، چه تغییری بدهیم. با این پرامپت، AI را تسهیل‌گرِ رتروی هفتگیِ خودت کن تا این عادت از همین حالا ساخته شود.",
+      prompt:"نقشِ تسهیل‌گرِ یک جلسهٔ رتروسپکتیو را بازی کن. از من دربارهٔ هفتهٔ گذشته‌ام بپرس: (۱) چه چیزهایی خوب پیش رفت؟ (۲) چه چیزهایی نه؟ (۳) چه چیزی را نمی‌دانم که اذیتم می‌کند؟ سؤال‌ها را یکی‌یکی بپرس و جوابِ کوتاه بگیر. در پایان جمع‌بندی کن و کمکم کن فقط «یک» تغییرِ مشخص و قابلِ‌اجرا برای هفتهٔ بعد انتخاب کنم — نه بیشتر.",
+      resources:[]},
+     {id:"L3g",kind:"project",min:90,t:"پروژه: یک اسپرینتِ یک‌هفته‌ای",
+      desc:"یک هدفِ کوچکِ شخصی را انتخاب کن و یک اسپرینتِ کاملِ یک‌هفته‌ای اجرا کن: پلنینگ (انتخابِ استوری‌ها)، استندآپِ روزانهٔ دو دقیقه‌ای با خودت، و در پایان ریویو و رترو. بعد از این تجربه، واژه‌های اسکرام برایت «زنده» می‌شوند.",
+      resources:[]}
+   ]},
+
+  {id:"L4",num:4,star:"",name:"مهارت‌های انسانی",
+   intro:"پروژه‌ها را آدم‌ها جلو می‌برند، نه گانت‌چارت‌ها. سخت‌ترین بخشِ کارِ تو <b>رهبری بدونِ اختیارِ رسمی</b> است: هم‌جهت‌کردنِ آدم‌هایی که رئیسشان نیستی. این سطح چهار مهارتِ هر روزه را می‌سازد: نقشهٔ ذی‌نفعان، نه گفتن، مدیریتِ تعارض و کارِ تیمیِ از راهِ دور.",
+   items:[
+     {id:"L4a",kind:"concept",min:15,t:"نقشهٔ ذی‌نفعان: شبکهٔ قدرت و علاقه",
+      desc:"همهٔ ذی‌نفعان یک‌جور مدیریت نمی‌شوند: پرقدرت/پرعلاقه را نزدیک نگه دار، پرقدرت/کم‌علاقه را راضی، و بقیه را مطلع. این شبکهٔ سادهٔ دو در دو، استراتژیِ ارتباطیِ تو را یک‌شبه حرفه‌ای می‌کند.",
+      resources:[]},
+     {id:"L4b",kind:"concept",min:12,t:"نه گفتن و مذاکره بر سرِ محدوده",
+      desc:"مدیرِ پروژه‌ای که به همه‌چیز بله می‌گوید، به هیچ‌چیز متعهد نمانده است. «نهِ» حرفه‌ای یعنی: «بله، به شرطی که» — نشان‌دادنِ هزینهٔ هر خواسته و پیشنهادِ جایگزین. این مهارت اعتبارِ تو را می‌سازد، نه خرابش کند.",
+      resources:[]},
+     {id:"L4c",kind:"concept",min:12,t:"تعارض: نشانهٔ سلامت، نه فاجعه",
+      desc:"تیمِ بی‌تعارض یا بی‌تفاوت است یا ترسیده. تعارضِ خوب دربارهٔ ایده‌هاست، نه آدم‌ها؛ کارِ تو این است که اختلاف را زود رو بیاوری، به داده و هدفِ مشترک گره بزنی و نگذاری زیرِ فرش برود و بزرگ شود.",
+      resources:[]},
+     {id:"L4d",kind:"concept",min:12,t:"رهبری بدونِ اختیارِ رسمی",
+      desc:"وقتی کسی به تو گزارش نمی‌دهد، تنها سرمایه‌ات اعتماد است: شفاف‌بودن، ثابت‌قدم‌بودن، اعتباردادن به دیگران و حل‌کردنِ موانعشان. آدم‌ها با مدیرِ پروژه‌ای همراهی می‌کنند که کارشان را ساده‌تر می‌کند، نه پیچیده‌تر.",
+      resources:[]},
+     {id:"L4e",kind:"concept",min:12,t:"کارِ از راهِ دور و ناهم‌زمان",
+      desc:"در تیم‌های امروزی (به‌خصوص تیم‌های AI که اغلب پراکنده‌اند) نوشتنِ خوب مهم‌تر از جلسهٔ خوب است: تصمیم‌ها مکتوب، به‌روزرسانی‌ها ناهم‌زمان، و جلسه فقط برای چیزهایی که واقعاً گفتگو می‌خواهند.",
+      resources:[]},
+     {id:"L4f",kind:"ai",min:15,t:"تمرینِ AI: تمرینِ گفتگوی سخت",
+      desc:"ترسناک‌ترین بخشِ کار — دادنِ خبرِ بد یا نه گفتن به آدمِ پرقدرت — تمرین‌کردنی است. بگذار AI نقشِ طرفِ مقابل را بازی کند تا در محیطِ امن، عضلهٔ این گفتگو ساخته شود.",
+      prompt:"نقشِ حامیِ مالیِ پروژهٔ من را بازی کن: پرمشغله، نتیجه‌گرا و کمی بی‌حوصله. من باید خبر بدهم که پروژه دو هفته تأخیر دارد و دلیلش را توضیح دهم. سخت‌گیر باش، وسطِ حرفم بپر و راه‌حلِ فوری بخواه — اما منصف بمان. بعد از پایانِ گفتگو، از نقش بیرون بیا و عملکردم را نقد کن: کجا خوب بودم، کجا دفاعی شدم، و چه جمله‌ای را باید جورِ دیگری می‌گفتم؟",
+      resources:[]}
+   ]},
+
+  {id:"L5",num:5,star:"دروازهٔ دنیای AI",name:"سوادِ AI به زبانِ ساده",
+   intro:"برای مدیریتِ پروژه‌های AI لازم نیست برنامه‌نویس شوی — اما باید <b>زبانِ این دنیا</b> را بفهمی تا در جلسه‌ها گم نشوی و وعده‌های غیرواقعی را تشخیص بدهی. این سطح، بدونِ حتی یک خط کد، به تو می‌گوید AI چیست، چه می‌تواند، چه نمی‌تواند و واژه‌هایش یعنی چه.",
+   items:[
+     {id:"L5a",kind:"concept",min:25,t:"AI و یادگیریِ ماشین به زبانِ آدمیزاد",
+      desc:"یادگیریِ ماشین یعنی به‌جای نوشتنِ قانون توسطِ برنامه‌نویس، سیستم از مثال‌های فراوان الگو یاد می‌گیرد. همین یک جمله کلیدِ همه‌چیز است: کیفیتِ AI به کیفیتِ مثال‌هایی که دیده وابسته است — و برای همین «داده» پای ثابتِ هر جلسهٔ AI است.",
+      resources:[{label:"دورهٔ رایگان: AI for Everyone (Coursera)",url:"https://www.coursera.org/learn/ai-for-everyone"},{label:"دورهٔ رایگان: Elements of AI",url:"https://www.elementsofai.com/"}]},
+     {id:"L5b",kind:"concept",min:25,t:"مدل‌های زبانی (LLM) چطور کار می‌کنند",
+      desc:"مدل‌هایی مثلِ ChatGPT و Claude «حدس‌زنندهٔ کلمهٔ بعدی» در مقیاسِ عظیم‌اند — نه بانکِ حقایق. برای همین روان و مطمئن حرف می‌زنند اما گاهی با همان اطمینان اشتباه می‌کنند (توهم). فهمِ این سازوکار، انتظاراتِ تو را واقعی می‌کند.",
+      resources:[]},
+     {id:"L5c",kind:"concept",min:15,t:"داده: سوختِ هر پروژهٔ AI",
+      desc:"«زباله بدهی، زباله می‌گیری» قانونِ اولِ AI است: دادهٔ کم، کثیف یا سوگیرانه یعنی مدلِ بد — هرقدر هم تیم باهوش باشد. به‌عنوانِ مدیرِ پروژه باید همیشه بپرسی: داده از کجا می‌آید، چه کیفیتی دارد و چه کسی برچسبش زده؟",
+      resources:[]},
+     {id:"L5d",kind:"concept",min:20,t:"AI چه می‌تواند و چه نمی‌تواند",
+      desc:"AI در الگوهای تکرارشونده با دادهٔ فراوان می‌درخشد و در عقلِ سلیم، زمینهٔ تازه و موقعیت‌های کمیاب زمین می‌خورد — گاهی به شکلی که هیچ انسانی اشتباه نمی‌کند. تشخیصِ «مسئلهٔ مناسبِ AI» از «مسئلهٔ نامناسب» شاید مهم‌ترین مهارتِ تو در این حوزه باشد.",
+      resources:[]},
+     {id:"L5e",kind:"concept",min:20,t:"واژه‌نامهٔ بقا در جلسه‌های AI",
+      desc:"آموزش (training)، استنتاج (inference)، فاین‌تیون، RAG، پرامپت، ارزیابی (eval)، توهم، دریفت — این واژه‌ها هر روز در جلسه‌ها می‌چرخند. لازم نیست پیاده‌سازی‌شان را بلدی؛ باید بدانی هرکدام یعنی چه و کِی اهمیت پیدا می‌کنند.",
+      resources:[]},
+     {id:"L5f",kind:"ai",min:15,t:"مهندسیِ پرامپت برای مدیرِ پروژه",
+      desc:"خروجیِ خوب از AI گرفتن خودش مهارت است: زمینه بده، نقش تعیین کن، قالبِ خروجی بخواه، و مثال بزن. این پرامپت را نگه دار و هر روز به کارش بگیر — بهترین تمرین، استفادهٔ واقعی است.",
+      prompt:"می‌خواهم پرامپت‌نویسی‌ام را بهتر کنم. این پرامپتی است که نوشته‌ام: «[پرامپتت را بچسبان]». اول بگو چه اطلاعاتِ مهمی (زمینه، نقش، قالبِ خروجی، مثال، محدودیت) در آن جا نیست. بعد نسخهٔ بهترش را بنویس و کنارِ هر تغییر توضیح بده چرا این تغییر خروجی را بهتر می‌کند. در پایان یک قانونِ کلی که از همین مورد یاد گرفتم را جمع‌بندی کن.",
+      resources:[]},
+     {id:"L5g",kind:"project",min:90,t:"پروژه: یک هفته دستیارِ AI",
+      desc:"یک هفته، هر روز حداقل یک کارِ واقعیِ مدیریتی را با AI انجام بده (صورت‌جلسه، پیش‌نویسِ ایمیل، فهرستِ ریسک، برنامهٔ هفته) و در یک جدول ثبت کن: کجا عالی بود، کجا خراب کرد، کجا باید دوباره‌کاری می‌کردی. این دفترچه، درکِ واقعیِ تو از AI است.",
+      resources:[]}
+   ]},
+
+  {id:"L6",num:6,star:"هستهٔ اصلی",name:"مدیریتِ پروژه‌های AI",
+   intro:"اینجا همهٔ راه به هم می‌رسد. پروژه‌های AI <b>ذاتاً آزمایشی‌اند</b>: هیچ‌کس از قبل نمی‌داند مدل چقدر خوب از آب درمی‌آید، و بخشِ بزرگی از پروژه‌ها هرگز به محصول نمی‌رسند. مدیریتِ این عدمِ قطعیت — با فازبندی، معیارِ موفقیتِ روشن و ریسک‌های مخصوصِ AI — دقیقاً همان مهارتی است که بازارِ کار تشنه‌اش است.",
+   items:[
+     {id:"L6a",kind:"concept",min:20,t:"چرا پروژه‌های AI فرق دارند (و اغلب شکست می‌خورند)",
+      desc:"در نرم‌افزارِ معمولی «ساختنی» تقریباً قطعی است؛ در AI ممکن است بعد از ماه‌ها کار، دقتِ مدل هرگز به حدِ قابلِ استفاده نرسد. برای همین پروژهٔ AI را باید مثلِ مجموعه‌ای از آزمایش‌ها مدیریت کرد: فرضیه، تستِ کوچک، تصمیمِ ادامه/توقف — نه مثلِ یک خطِ تولید.",
+      resources:[]},
+     {id:"L6b",kind:"concept",min:25,t:"چرخهٔ حیاتِ پروژهٔ AI",
+      desc:"مسیرِ استاندارد: تعریفِ مسئله ← فهم و آماده‌سازیِ داده ← ساخت و آزمایشِ مدل ← ارزیابی ← استقرار ← پایشِ مداوم. دو تفاوتِ بزرگ با پروژهٔ عادی: چرخه‌ها بارها تکرار می‌شوند، و کار بعد از تحویل تمام نمی‌شود چون مدل در دنیای واقعی «فرسوده» می‌شود (دریفت).",
+      resources:[{label:"ویکی‌پدیا: CRISP-DM",url:"https://en.wikipedia.org/wiki/Cross-industry_standard_process_for_data_mining"}]},
+     {id:"L6c",kind:"concept",min:15,t:"تیمِ AI: چه کسی چه‌کاره است",
+      desc:"دانشمندِ داده مدل و آزمایش می‌سازد، مهندسِ داده لوله‌کشیِ داده را، مهندسِ ML مدل را به محصولِ پایدار تبدیل می‌کند، و برچسب‌زن‌ها دادهٔ آموزشی را آماده می‌کنند. کارِ تو ترجمهٔ بینِ این آدم‌ها و کسب‌وکار است — پس باید زبانِ هر دو طرف را بفهمی.",
+      resources:[]},
+     {id:"L6d",kind:"concept",min:20,t:"تعریفِ موفقیت: معیارِ فنی، معیارِ کسب‌وکار",
+      desc:"«مدلِ ۹۵٪ دقیق» می‌تواند برای کسب‌وکار بی‌ارزش باشد و مدلِ ۸۰٪ دقیق، طلا. قبل از شروع باید دو چیز روشن باشد: معیارِ فنی (دقت روی چه داده‌ای؟) و معیارِ کسب‌وکار (چه عددی باید تکان بخورد؟) — به‌علاوهٔ تعریفِ «به اندازهٔ کافی خوب» برای عرضه.",
+      resources:[]},
+     {id:"L6e",kind:"concept",min:20,t:"ریسک‌های مخصوصِ AI: سوگیری، توهم، حریمِ خصوصی، قانون",
+      desc:"AI ریسک‌هایی دارد که پروژهٔ عادی ندارد: سوگیریِ پنهان در داده، توهمِ مطمئن، نشتِ دادهٔ شخصی، و قوانینی مثلِ EU AI Act که برای سیستم‌های پرریسک الزاماتِ جدی دارند. دفترِ ریسکِ پروژهٔ AI بدونِ این ستون‌ها ناقص است.",
+      resources:[{label:"مرجع: EU AI Act Explorer",url:"https://artificialintelligenceact.eu/"}]},
+     {id:"L6f",kind:"concept",min:15,t:"دموی جادویی، محصولِ واقعی",
+      desc:"خطرناک‌ترین لحظهٔ پروژهٔ AI روزِ دموی موفق است: مدیر فکر می‌کند کار تمام است، در حالی که فاصلهٔ دمو تا محصولِ قابلِ اتکا اغلب ۸۰٪ راه است. کارِ تو مدیریتِ همین انتظار است: پایلوتِ کوچک، معیارِ عبور، و شجاعتِ توقف اگر اعداد نرسیدند.",
+      resources:[]},
+     {id:"L6g",kind:"ai",min:20,t:"تمرینِ AI: سنجشِ امکان‌پذیریِ یک ایدهٔ AI",
+      desc:"با این پرامپت یاد می‌گیری هر ایدهٔ «بیا با AI انجامش بدهیم» را قبل از قول‌دادن، مثلِ یک حرفه‌ای بشکافی: داده، معیار، ریسک، و راهِ ارزان‌ترِ بدونِ AI.",
+      prompt:"این ایدهٔ AI به من پیشنهاد شده: «[ایده]». نقشِ یک مشاورِ بدبین اما منصف را بازی کن و کمکم کن امکان‌پذیری‌اش را بسنجم: (۱) دقیقاً چه پیش‌بینی یا تولیدی قرار است انجام شود؟ (۲) چه داده‌ای لازم است و احتمالاً چه مشکلی دارد؟ (۳) معیارِ موفقیتِ فنی و کسب‌وکاری چه باید باشد؟ (۴) سه ریسکِ اصلی؟ (۵) آیا راهِ ساده‌تری بدونِ AI هست؟ در پایان توصیهٔ برو/نرو بده با دلیل.",
+      resources:[]},
+     {id:"L6h",kind:"project",min:90,t:"پروژه: یک‌صفحه‌ایِ پروژهٔ AI",
+      desc:"برای یک ایدهٔ واقعی (مثلاً چت‌باتِ پشتیبانیِ یک فروشگاهِ کوچک) سندِ یک‌صفحه‌ای بنویس: مسئله، کاربر، دادهٔ موجود، معیارِ فنی و کسب‌وکاری، فازبندی (آزمایش ← پایلوت ← عرضه)، ریسک‌ها با پاسخ، و شرطِ توقف. این سند، نمونه‌کارِ طلاییِ توست.",
+      resources:[]}
+   ]},
+
+  {id:"L7",num:7,star:"",name:"حرفه‌ای شدن در عصرِ AI",
+   intro:"حلقهٔ آخر: AI را <b>دستیارِ روزانهٔ خودت</b> کن، مسیرِ گواهینامه‌ها را بشناس، و تجربه‌هایت را به نمونه‌کار و شبکهٔ حرفه‌ای تبدیل کن. از اینجا به بعد رشد یعنی تکرار: پروژهٔ واقعی بگیر — حتی کوچک و داوطلبانه — و این چرخه را بارها بچرخان.",
+   items:[
+     {id:"L7a",kind:"practice",min:20,t:"AI به‌عنوانِ دستیارِ مدیرِ پروژه",
+      desc:"مدیرانِ پروژهٔ حرفه‌ای حالا صورت‌جلسه، پیش‌نویسِ گزارش، تحلیلِ ریسک و برنامهٔ ارتباطی را با AI شروع می‌کنند و وقتِ آزادشده را صرفِ آدم‌ها و تصمیم‌ها می‌کنند. ارزشِ تو در قضاوت است؛ بگذار AI پیش‌نویس بزند.",
+      resources:[]},
+     {id:"L7b",kind:"concept",min:15,t:"نقشهٔ گواهینامه‌ها: از کجا شروع کنم",
+      desc:"مسیرِ منطقی برای تازه‌کار: اول گواهیِ Google Project Management (بدونِ پیش‌نیاز)، بعد CAPM از PMI، و بعدها با ۳ سال سابقه PMP — و اگر مسیرِ اجایل را رفتی، PSM. گواهی جای تجربه را نمی‌گیرد اما درِ مصاحبه‌ها را باز می‌کند.",
+      resources:[{label:"گواهینامهٔ Google Project Management",url:"https://grow.google/certificates/project-management/"},{label:"مرجع: گواهینامه‌های PMI",url:"https://www.pmi.org/certifications"}]},
+     {id:"L7c",kind:"concept",min:20,t:"نمونه‌کارِ مدیرِ پروژه",
+      desc:"نمونه‌کارِ تو اسکرین‌شات نیست؛ روایتِ سندهاست: منشور، WBS، گزارشِ وضعیت، دفترِ ریسک و یک‌صفحه‌ایِ AI که در همین مسیر ساختی — به‌علاوهٔ داستانِ «چه مشکلی بود، چه کردم، چه شد». همین پوشه تو را از اکثرِ متقاضیانِ بی‌مدرکِ عملی جلو می‌اندازد.",
+      resources:[]},
+     {id:"L7d",kind:"concept",min:10,t:"جامعه و شبکه",
+      desc:"عضویت در انجمنِ PMI و گروه‌های محلی و آنلاینِ مدیرانِ پروژه، هم یادگیری می‌آورد هم فرصتِ شغلی؛ بیشترِ موقعیت‌ها قبل از آگهی، در همین شبکه‌ها رد و بدل می‌شوند. حضورِ منظمِ کوچک، از حضورِ پراکندهٔ بزرگ بهتر است.",
+      resources:[{label:"وب‌سایتِ PMI",url:"https://www.pmi.org/"}]},
+     {id:"L7e",kind:"ai",min:15,t:"تمرینِ AI: شبیه‌سازِ مصاحبه",
+      desc:"مصاحبهٔ مدیریتِ پروژه الگوهای مشخصی دارد: سؤال‌های موقعیتی («تعریف کن وقتی که...»). با AI تمرین کن تا داستان‌هایت را با ساختارِ STAR (موقعیت، وظیفه، اقدام، نتیجه) روان تعریف کنی.",
+      prompt:"نقشِ مصاحبه‌گرِ یک موقعیتِ «مدیرِ پروژهٔ جونیور با تمرکز بر پروژه‌های AI» را بازی کن. پنج سؤالِ موقعیتی بپرس — یکی‌یکی — و بعد از هر جوابِ من، بازخورد بده: آیا ساختارِ STAR داشت؟ چه جزئیاتی کم بود؟ چه جمله‌ای اثرِ منفی داشت؟ سختیِ سؤال‌ها را کم‌کم بالا ببر و سؤالِ آخر را دربارهٔ مدیریتِ یک پروژهٔ AI شکست‌خورده بپرس.",
+      resources:[]},
+     {id:"L7f",kind:"project",min:180,t:"پروژهٔ پایانی: طرحِ کاملِ عرضهٔ یک چت‌باتِ AI",
+      desc:"سناریو: یک کسب‌وکارِ کوچک می‌خواهد چت‌باتِ پشتیبانی راه بیندازد و تو مدیرِ پروژه‌ای. پکیجِ کامل را بساز: منشور، ذی‌نفعان، WBS، زمان‌بندیِ فازبندی‌شده (آزمایش/پایلوت/عرضه)، دفترِ ریسک با ریسک‌های مخصوصِ AI، معیارهای موفقیت و برنامهٔ ارتباطی. این، پایان‌نامهٔ عملیِ کلِ این نقشهٔ راه است.",
+      resources:[]}
+   ]}
+];
+
+const CASE_GROUPS = [
+ {id:"CSF", name:"شکست‌های آموزنده", eyebrow:"Case files · Failures",
+  intro:"شش پروژهٔ واقعی که با بهترین تیم‌ها و بودجه‌های عظیم شکست خوردند. الگوها را ببین: دادهٔ نامناسب، وعدهٔ بیش از توان، و انتظاراتِ مدیریت‌نشده — نه ضعفِ فنی.",
+  cases:[
+   {id:"CSzillow",t:"Zillow Offers: مدلی که خانه‌ها را گران خرید",tag:"شکست",
+    desc:"زیلو با مدلِ قیمت‌گذاریِ الگوریتمی خانه می‌خرید و می‌فروخت. در ۲۰۲۱ اعلام کرد پیش‌بینی‌ناپذیریِ قیمتِ خانه «بسیار فراتر از انتظار» بود: فقط در یک فصل ۴۲۱٫۶ میلیون دلار ضرر، تعطیلیِ کاملِ کسب‌وکار و تعدیلِ ۲۵٪ کارکنان.",
+    lesson:"عدمِ قطعیتِ مدل، ریسکِ کسب‌وکار است؛ قبل از شرط‌بندیِ بزرگ، حاشیهٔ خطای مدل را در پول ترجمه کن.",
+    links:[{label:"مقاله: CNBC",url:"https://www.cnbc.com/2021/11/02/zillow-shares-plunge-after-announcing-it-will-close-home-buying-business.html"}]},
+   {id:"CSwatson",t:"IBM Watson سلامت: وعدهٔ بزرگ، نتیجهٔ کوچک",tag:"شکست",
+    desc:"بعد از پیروزی در مسابقهٔ Jeopardy، آی‌بی‌ام قول داد واتسون درمانِ سرطان را متحول کند. هشت سال بعد، گزارشِ IEEE Spectrum نشان داد خروجیِ بالینیِ واقعی ناچیز بود: دادهٔ پزشکیِ آشفته و فاصلهٔ عظیمِ دمو تا بالین، پروژه را زمین زد.",
+    lesson:"بینِ نمایشِ تبلیغاتی و واقعیتِ داده‌های کثیفِ دنیای واقعی، یک اقیانوس فاصله است؛ کوچک و باریک شروع کن.",
+    links:[{label:"مقاله: IEEE Spectrum",url:"https://spectrum.ieee.org/how-ibm-watson-overpromised-and-underdelivered-on-ai-health-care"}]},
+   {id:"CSamazon",t:"ابزارِ استخدامِ آمازون: سوگیری از دلِ داده",tag:"شکست",
+    desc:"آمازون از ۲۰۱۴ مدلی برای غربالِ رزومه ساخت که روی ده سال رزومهٔ عمدتاً مردانه آموزش دیده بود. مدل رزومه‌های حاویِ واژهٔ «زنان» را جریمه می‌کرد و فارغ‌التحصیلانِ دو کالجِ زنانه را پایین می‌آورد؛ پروژه در ۲۰۱۷ کنار گذاشته شد.",
+    lesson:"مدل، آینهٔ دادهٔ گذشته است: اگر گذشته سوگیری داشته، محصولت هم دارد — مگر آگاهانه جلویش را بگیری.",
+    links:[{label:"گزارشِ Reuters (Euronews)",url:"https://www.euronews.com/business/2018/10/10/amazon-scraps-secret-ai-recruiting-tool-that-showed-bias-against-women"}]},
+   {id:"CSaircanada",t:"چت‌باتِ ایر کانادا: توهمی که پایش رفت دادگاه",tag:"شکست",
+    desc:"چت‌باتِ ایر کانادا دربارهٔ تخفیفِ سوگواری اطلاعاتِ غلط داد. دادگاه در ۲۰۲۴ استدلالِ شرکت که «چت‌بات موجودیتِ حقوقیِ جداست» را رد کرد و ایر کانادا را به پرداختِ خسارت محکوم کرد: شرکت مسئولِ حرفِ باتِ خودش است.",
+    lesson:"هر قولی که AI تو بدهد، قولِ توست؛ برای محتوای حساس، سدِ محافظ و مسیرِ انسانی بگذار.",
+    links:[{label:"مقاله: CBS News",url:"https://www.cbsnews.com/news/aircanada-chatbot-discount-customer/"}]},
+   {id:"CSmcd",t:"سفارش‌گیرِ صوتیِ مک‌دونالد: پایانِ یک پایلوتِ سه‌ساله",tag:"شکست",
+    desc:"مک‌دونالد از ۲۰۲۱ با IBM سفارش‌گیریِ صوتیِ AI را در بیش از ۱۰۰ شعبه آزمایش کرد؛ ویدیوهای سفارش‌های عجیب وایرال شد و در ژوئنِ ۲۰۲۴ اعلام کرد آزمایش را تمام می‌کند. پایلوتِ شجاعانه، خروجِ به‌موقع — این هم نوعی موفقیتِ مدیریتی است.",
+    lesson:"پایلوت برای یادگیری است، نه اثباتِ حتمیِ موفقیت؛ معیارِ عبور و شجاعتِ توقف را از روزِ اول تعیین کن.",
+    links:[{label:"مقاله: CNBC",url:"https://www.cnbc.com/2024/06/17/mcdonalds-to-end-ibm-ai-drive-thru-test.html"}]},
+   {id:"CSepic",t:"مدلِ سپسیسِ Epic: اعدادِ فروشنده در برابرِ واقعیت",tag:"شکست",
+    desc:"مدلِ پیش‌بینیِ سپسیسِ شرکتِ Epic در صدها بیمارستان استفاده می‌شد. اعتبارسنجیِ مستقلِ دانشگاهِ میشیگان (JAMA) نشان داد دقتِ واقعی بسیار پایین‌تر از ادعای فروشنده است: دوسومِ موارد را از دست می‌داد و برای ۱۸٪ کلِ بیماران هشدارِ مزاحم می‌ساخت.",
+    lesson:"عددِ فروشنده را روی دادهٔ خودت راستی‌آزمایی کن؛ «در جای دیگر جواب داده» یعنی هیچ.",
+    links:[{label:"گزارش: Michigan Medicine",url:"https://www.michiganmedicine.org/health-lab/popular-sepsis-prediction-tool-less-accurate-claimed"}]}
+  ]},
+ {id:"CSS", name:"موفقیت‌ها و درس‌های ظریف", eyebrow:"Case files · Wins & nuance",
+  intro:"موفقیتِ AI هم داستانِ ساده‌ای نیست: الگوریتمِ برنده‌ای که هرگز استفاده نشد، دستیاری که بعدش انسان‌ها برگشتند، و ادعاهایی که فقط با آزمایشِ کنترل‌شده معنا پیدا کردند.",
+  cases:[
+   {id:"CSnetflix",t:"جایزهٔ یک میلیون دلاریِ نتفلیکس که هرگز مستقر نشد",tag:"نکته‌دار",
+    desc:"نتفلیکس در ۲۰۰۹ برای الگوریتمی با ۱۰٪ بهبودِ پیش‌بینی، یک میلیون دلار جایزه داد — اما هرگز کاملش را مستقر نکرد: هزینهٔ مهندسیِ پیاده‌سازی به دستاوردش نمی‌ارزید و کسب‌وکار هم از DVD به استریم چرخیده بود و مسئله عوض شده بود.",
+    lesson:"دقتِ بیشتر به‌خودیِ‌خود ارزش نیست؛ ارزش = دستاورد منهای هزینهٔ پیاده‌سازی — و صورت‌مسئله هم عمر دارد.",
+    links:[{label:"مقاله: Techdirt",url:"https://www.techdirt.com/2012/04/13/why-netflix-never-implemented-algorithm-that-won-netflix-1-million-challenge/"}]},
+   {id:"CScopilot",t:"GitHub Copilot: ادعای بهره‌وری با آزمایشِ واقعی",tag:"موفقیت",
+    desc:"گیت‌هاب به‌جای شعار، آزمایشِ کنترل‌شده منتشر کرد: ۹۵ توسعه‌دهنده، گروهِ Copilot کارِ مشخص را ۵۵٪ سریع‌تر تمام کرد (۱:۱۱ در برابرِ ۲:۴۱) با نرخِ اتمامِ بالاتر؛ نظرسنجیِ دوهزار نفره هم رضایت و تمرکزِ بیشتر را نشان داد.",
+    lesson:"ادعای AI را با آزمایشِ کنترل‌شده و متریکِ روشن بفروش — همین کار اعتمادِ ذی‌نفعان را می‌خرد.",
+    links:[{label:"پژوهش: GitHub Blog",url:"https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-on-developer-productivity-and-happiness/"}]},
+   {id:"CSklarna",t:"دستیارِ Klarna: کارِ ۷۰۰ نفر — و بازگشتِ انسان‌ها",tag:"نکته‌دار",
+    desc:"دستیارِ AI کلارنا در ماهِ اول ۲٫۳ میلیون گفتگو — دوسومِ کلِ چت‌های پشتیبانی — را انجام داد؛ معادلِ کارِ ۷۰۰ نفر با زمانِ حلِ زیرِ ۲ دقیقه. اما در ۲۰۲۵ مدیرعامل اعلام کرد برای کیفیت، دوباره انسان استخدام می‌کنند: «پشتیبانیِ انسانی همیشه یک چیزِ VIP خواهد بود».",
+    lesson:"صرفه‌جویی متریکِ کامل نیست؛ کیفیتِ تجربه را هم اندازه بگیر، وگرنه پس‌لرزه‌اش برمی‌گردد.",
+    links:[{label:"بیانیه: Klarna (PR Newswire)",url:"https://www.prnewswire.com/news-releases/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month-302072740.html"},{label:"مقاله: TechCrunch",url:"https://techcrunch.com/2025/06/04/klarna-ceo-says-company-will-use-humans-to-offer-vip-customer-service/"}]},
+   {id:"CSduolingo",t:"دولینگو و شرط‌بندیِ «AI-first»",tag:"نکته‌دار",
+    desc:"در ۲۰۲۵ مدیرعاملِ دولینگو اعلام کرد شرکت «AI-first» می‌شود: توقفِ تدریجیِ کار با پیمانکاران برای کارهایی که AI از پسشان برمی‌آید و استخدامِ جدید فقط با اثباتِ غیرقابلِ‌خودکارسازی بودنِ کار. سرعتِ حرکت را به کیفیتِ بی‌نقص ترجیح دادند — و موجِ واکنشِ عمومی هم گرفتند.",
+    lesson:"تحولِ AI فقط پروژهٔ فنی نیست؛ مدیریتِ تغییر و روایتِ عمومی‌اش به همان اندازه کارِ توست.",
+    links:[{label:"مقاله: The Register",url:"https://www.theregister.com/2025/04/29/duolingo_ceo_ai_first_shift/"}]}
+  ]}
+];
+
+const BOOK_GROUPS = [
+ {id:"BKPM", name:"پایه‌های مدیریتِ پروژه", eyebrow:"Bookshelf · PM foundations",
+  intro:"پنج کتاب به ترتیبِ خواندن: از راهنمای گام‌به‌گامِ مبتدی تا رمانِ فنی و مقاله‌های کلاسیک. هدف: زبان و شهودِ یک مدیرِ پروژهٔ واقعی.",
+  books:[
+   {id:"BKhorine",t:"Project Management Absolute Beginner's Guide",a:"Greg Horine",
+    sum:"کتابِ درسیِ نقطهٔ صفر: قدم‌به‌قدم کلِ چرخه را می‌رود — آغاز، برنامه‌ریزی، زمان‌بندی، بودجه، رهبریِ تیم، کنترلِ تغییر و بستن — با چک‌لیست و زبانِ ساده و بدونِ فرضِ هیچ دانشِ قبلی. بهترین استفاده: همراهِ سطح‌های ۰ تا ۲ همین نقشهٔ راه بخوان و قالب‌هایش را روی پروژهٔ شخصی‌ات پیاده کن.",
+    links:[{label:"صفحهٔ ناشر: Pearson",url:"https://www.pearson.com/en-us/subject-catalog/p/project-management-absolute-beginner-s-guide/P200000000328/9780137646951"}]},
+   {id:"BKunofficial",t:"Project Management for the Unofficial Project Manager",a:"Kogon, Blakemore, Wood",
+    sum:"برای کسانی که بدونِ عنوانِ رسمی، ناگهان مسئولِ پروژه شده‌اند — یعنی دقیقاً تو. فرمولِ فرانکلین‌کاوی: «آدم‌ها + فرایند»، حول پنج مرحلهٔ آغاز/برنامه/اجرا/پایش/بستن، با تأکید بر اقتدارِ غیررسمی: رهبریِ کسانی که به تو گزارش نمی‌دهند. خواندنش سریع است و لحنش عملی؛ جفتِ کاملِ سطحِ ۴.",
+    links:[{label:"صفحهٔ FranklinCovey",url:"https://www.franklincovey.com/books/project-management-for-the-unofficial-project-manager/"}]},
+   {id:"BKscrum",t:"Scrum: The Art of Doing Twice the Work in Half the Time",a:"Jeff Sutherland",
+    sum:"داستانِ اسکرام از زبانِ هم‌آفریننده‌اش: چرا برنامه‌های آبشاریِ بلندمدت دروغ می‌گویند و چطور اسپرینت‌های کوتاه، تیمِ کوچک، بک‌لاگِ اولویت‌دار و رتروسپکتیو، بهره‌وری را چند برابر می‌کنند. پر از قصهٔ واقعی — از FBI تا خودروسازی — و بهترین همراه برای سطحِ ۳؛ بعدش راهنمای ۱۴ صفحه‌ایِ رسمیِ اسکرام را بخوان.",
+    links:[{label:"صفحهٔ ناشر: Penguin Random House",url:"https://www.penguinrandomhouse.com/books/226850/scrum-by-jeff-sutherland-and-jj-sutherland/"}]},
+   {id:"BKphoenix",t:"The Phoenix Project",a:"Gene Kim, Kevin Behr, George Spafford",
+    sum:"یک رمان: مدیری معمولی وسطِ پروژهٔ فناوریِ در حالِ سقوط پرت می‌شود و قدم‌به‌قدم نجاتش می‌دهد. بدونِ آنکه بفهمی، مفاهیمِ جریانِ کار، گلوگاه، محدودیتِ کارِ هم‌زمان و «سه راهِ» دواپس را یاد می‌گیری. برای غیرفنی‌ها بهترین راهِ فهمیدنِ اینکه کارِ فناوری واقعاً چطور جریان دارد — و چرا گیر می‌کند.",
+    links:[{label:"صفحهٔ ناشر: IT Revolution",url:"https://itrevolution.com/product/the-phoenix-project/"}]},
+   {id:"BKmmm",t:"The Mythical Man-Month",a:"Frederick Brooks",
+    sum:"کلاسیکِ ۱۹۷۵ که هنوز در هر جلسهٔ برنامه‌ریزی حاضر است، با قانونِ معروفش: «اضافه‌کردنِ نیرو به پروژهٔ عقب‌افتاده، عقب‌ترش می‌کند» — چون سربارِ ارتباط با اندازهٔ تیم منفجر می‌شود. مثال‌ها قدیمی‌اند اما حقیقت‌ها زنده: چرا تخمین‌ها خوش‌بینانه‌اند و چرا تیمِ کوچکِ منسجم برنده است. نسخهٔ سالگرد مقالهٔ «گلولهٔ نقره‌ای وجود ندارد» را هم دارد.",
+    links:[{label:"صفحهٔ ناشر: Pearson",url:"https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780132119160"}]}
+  ]},
+ {id:"BKAI", name:"AI برای تصمیم‌گیرندگان", eyebrow:"Bookshelf · AI for decision-makers",
+  intro:"چهار کتاب که بدونِ ریاضی و کد، ذهنیتِ درست دربارهٔ AI می‌سازند: اقتصادِ تصمیم، کارِ روزمره با AI، بازطراحیِ فرایندها، و ورود به نقشِ تخصصی.",
+  books:[
+   {id:"BKprediction",t:"Prediction Machines",a:"Agrawal, Gans, Goldfarb",
+    sum:"سه اقتصاددان AI را به یک جمله تقلیل می‌دهند: «پیش‌بینیِ ارزان». وقتی پیش‌بینی ارزان شود، قضاوتِ انسانی و داده گران‌بها می‌شوند — و با همین عینک می‌توانی بدونِ هیچ دانشِ فنی تشخیص بدهی AI کجای کسب‌وکار می‌ارزد و کجا نمایش است. نسخهٔ به‌روزشده (۲۰۲۲) به انتخابِ اکونومیست از پنج کتابِ برترِ فهمِ AI است. چارچوبِ ذهنیِ سطحِ ۶ از همین‌جا می‌آید.",
+    links:[{label:"صفحهٔ ناشر: HBR Press",url:"https://store.hbr.org/product/prediction-machines-updated-and-expanded-the-simple-economics-of-artificial-intelligence/10598"}]},
+   {id:"BKcoint",t:"Co-Intelligence",a:"Ethan Mollick",
+    sum:"عملی‌ترین کتاب برای کار کردنِ روزانه با AI، از استادِ وارتون: با AI مثلِ یک هم‌تیمیِ عجیب رفتار کن — همیشه دعوتش کن سرِ میز، خودت انسانِ توی حلقه بمان، به او بگو چه نقشی بازی کند، و فرض کن این بدترین AIای است که به عمرت استفاده خواهی کرد. پرمثال، بی‌اغراق و کاملاً غیرفنی؛ بهترین کتابِ اولِ AI و همراهِ سطحِ ۵.",
+    links:[{label:"صفحهٔ ناشر: Penguin Random House",url:"https://www.penguinrandomhouse.com/books/741805/co-intelligence-by-ethan-mollick/"}]},
+   {id:"BKhm",t:"Human + Machine",a:"Paul Daugherty, James Wilson",
+    sum:"بر پایهٔ پژوهش روی ۱۵۰۰ سازمان، نشان می‌دهد ارزشِ واقعیِ AI نه در حذفِ انسان، که در «میانهٔ گمشده» است: نقش‌های تازه‌ای که در آن انسان ماشین را آموزش می‌دهد و توضیح می‌دهد، و ماشین توانِ انسان را چند برابر می‌کند. برای مدیرِ پروژه‌ای که باید فرایندها را دورِ AI بازطراحی کند — نه فقط ابزار اضافه کند — نقشهٔ راه است؛ نسخهٔ جدید فصلی دربارهٔ GenAI دارد.",
+    links:[{label:"صفحهٔ ناشر: HBR Press",url:"https://store.hbr.org/product/human-machine-updated-and-expanded-reimagining-work-in-the-age-of-ai/10724"}]},
+   {id:"BKaipm",t:"The AI Product Manager's Handbook",a:"Irene Bratsis",
+    sum:"پلِ ورود به نقشِ تخصصی: چرخهٔ عمرِ محصولِ ML از ایده تا استقرار و پایش، کار با دانشمندانِ داده، متریک‌های موفقیت و ملاحظاتِ اخلاقی — از زاویهٔ کسی که محصول/پروژه را می‌گرداند، نه کدنویس. فنی‌ترین کتابِ این فهرست است؛ آخر بخوان، وقتی سطح‌های ۵ و ۶ را تمام کرده‌ای و واژه‌ها برایت آشناست.",
+    links:[{label:"صفحهٔ ناشر: Packt",url:"https://www.packtpub.com/en-us/product/the-ai-product-managers-handbook-9781804612934"}]}
+  ]}
+];
+
+const TOOLS = [
+  {name:"Trello",cat:"کانبانِ ساده",site:"https://trello.com/",
+   desc:"ساده‌ترین بردِ کانبانِ دنیا: ستون و کارت، همین. بهترین نقطهٔ شروع برای دیدنِ جریانِ کار — همین امروز بردِ شخصی‌ات را بساز."},
+  {name:"Asana",cat:"مدیریتِ کار",site:"https://asana.com/",
+   desc:"مدیریتِ کارِ تیمی با نمای فهرست، برد، تقویم و تایم‌لاین؛ محبوبِ تیم‌های غیرفنی. برای پروژه‌های چندنفرهٔ اول، انتخابی امن و خوش‌دست."},
+  {name:"Jira",cat:"اجایلِ حرفه‌ای",site:"https://www.atlassian.com/software/jira",
+   desc:"استانداردِ تیم‌های نرم‌افزاری و AI برای اسکرام و کانبان: اسپرینت، بک‌لاگ، برن‌داون. اگر با تیمِ فنی کار کنی، دیر یا زود اینجا سر درمی‌آوری."},
+  {name:"Notion",cat:"سند و دانش",site:"https://www.notion.com/",
+   desc:"سند، ویکی و دیتابیسِ همه‌کاره با AI داخلی؛ جای منشور، صورت‌جلسه و دفترِ ریسک. مغزِ دومِ مکتوبِ پروژه — و تمرینِ عالی برای فرهنگِ نوشتن."},
+  {name:"ClickUp",cat:"مدیریتِ کار",site:"https://clickup.com/",
+   desc:"ابزارِ همه‌فن‌حریف: کار، سند، هدف و داشبورد در یک‌جا با AI داخلی. برای کسی که یک ابزارِ واحد برای همه‌چیز می‌خواهد."},
+  {name:"monday.com",cat:"مدیریتِ کار",site:"https://monday.com/",
+   desc:"بردهای رنگی و قابلِ‌سفارشی‌سازی با اتوماسیون‌های ساده؛ محبوبِ تیم‌های عملیات و بازاریابی. یادگیری‌اش سریع است و دموی خوبی برای کارفرما می‌شود."},
+  {name:"Linear",cat:"اجایلِ مدرن",site:"https://linear.app/",
+   desc:"ابزارِ موردعلاقهٔ استارتاپ‌های محصول: سریع، مینیمال و صفحه‌کلیدمحور برای ایشو و اسپرینت. اگر با تیم‌های محصولِ مدرن کار می‌کنی، زبانِ روزشان است."},
+  {name:"Miro",cat:"وایت‌بردِ آنلاین",site:"https://miro.com/",
+   desc:"وایت‌بردِ بی‌پایان برای ورکشاپ، نقشهٔ ذی‌نفعان، فلوچارت و رتروسپکتیو. جایی که فکرِ تیم دیدنی می‌شود؛ برای جلسه‌های دورکار طلاست."},
+  {name:"Smartsheet",cat:"گانت و برنامه",site:"https://www.smartsheet.com/",
+   desc:"اسپردشیتِ حرفه‌ایِ مدیریتِ پروژه با گانت، وابستگی و مسیرِ بحرانی. وقتی زمان‌بندیِ جدی و گزارشِ رسمی لازم داری، اینجا خانه‌ات است."},
+  {name:"Slack",cat:"ارتباطِ تیمی",site:"https://slack.com/",
+   desc:"پیام‌رسانِ استانداردِ تیم‌ها با کانال‌های موضوعی و اتصال به همهٔ ابزارها. مدیریتِ کانالِ پروژه و خلاصه‌های منظم، بخشی از کارِ روزانهٔ توست."},
+  {name:"Otter.ai",cat:"دستیارِ جلسه",site:"https://otter.ai/",
+   desc:"صورت‌جلسهٔ خودکار: ضبط، متن و خلاصه با اکشن‌آیتم‌ها. وقتی تو درگیرِ گفتگو هستی، او یادداشت برمی‌دارد — یکی از سریع‌ترین بردهای AI برای مدیرِ پروژه."},
+  {name:"Fireflies.ai",cat:"دستیارِ جلسه",site:"https://fireflies.ai/",
+   desc:"رقیبِ Otter با جستجوی قوی در آرشیوِ جلسات و اتصال به ابزارهای کار. حافظهٔ جمعیِ جلساتِ پروژه‌ات می‌شود؛ یکی از این دو را انتخاب کن."},
+  {name:"ChatGPT",cat:"دستیارِ AI",site:"https://chatgpt.com/",
+   desc:"دستیارِ همه‌کارهٔ OpenAI برای پیش‌نویس، تحلیل، خلاصه و طوفانِ فکری. با پرامپت‌های همین نقشهٔ راه، به بازوی روزانهٔ مدیریتی‌ات تبدیلش کن."},
+  {name:"Claude",cat:"دستیارِ AI",site:"https://claude.ai/",
+   desc:"دستیارِ AI شرکتِ Anthropic، قوی در متن‌های بلند و اسناد: تحلیلِ قرارداد، جمع‌بندیِ گزارش‌های طولانی و نوشتنِ ساخت‌یافته. برای کارِ سندمحورِ مدیرِ پروژه هم‌دستِ فوق‌العاده‌ای است."}
+];
+
+/* ==================== i18n ==================== */
+const KEY_LANG="pm-roadmap-lang";
+let lang="fa";
+const locNum = s => lang==="fa" ? toFa(s) : String(s);
+
+const STR={
+ fa:{
+  docTitle:"نقشهٔ راهِ مدیریتِ پروژه — از صفر تا مدیرِ پروژه‌های AI",
+  eyebrow:"PM Quest · نقشهٔ راهِ مدیریتِ پروژه",
+  pageTitle:'از <span class="pop">صفر</span> تا مدیرِ پروژه‌های <span class="pop">AI</span>',
+  pageSub:"یک مسیرِ سطح‌به‌سطح برای کسی که هیچ پیش‌زمینهٔ فنی، طراحی یا محصولی ندارد: اول مفاهیمِ پایهٔ مدیریتِ پروژه، بعد برنامه‌ریزی و اجرا، بعد اجایل و مهارت‌های انسانی، و در نهایت سوادِ AI و مدیریتِ پروژه‌های هوشِ مصنوعی. هر سطح را که کامل کنی، گرهِ بعدیِ مسیر روشن می‌شود.",
+  dark:"حالت تیره", light:"حالت روشن",
+  kpiLbl:"پیشرفتِ کلِ مسیر",
+  statH:"ساعتِ یادگیری", statM:"سطح‌های کامل‌شده", statI:"کارهای انجام‌شده",
+  of:"از", hUnit:"ساعت", mUnit:"سطح", iUnit:"مورد",
+  sections:{roadmap:"نقشهٔ راه", cases:"کیس‌استادی‌ها", books:"کتابخانه", tools:"جعبه‌ابزار"},
+  kind:{concept:"مفهوم",practice:"تمرین",project:"پروژه",ai:"پرامپتِ AI"},
+  minutes:"دقیقه", hoursShort:"ساعت",
+  itemsOf:(a,b)=>`${a} از ${b} مورد`,
+  casesOf:(a,b)=>`${a} از ${b} پرونده`,
+  booksOf:(a,b)=>`${a} از ${b} کتاب`,
+  copyPrompt:"کپیِ پرامپت", copied:"کپی شد ✓", copyFail:"کپی نشد",
+  casesHead:"کیس‌استادی‌های واقعیِ پروژه‌های AI",
+  casesSub:"هیچ درسی قوی‌تر از پروژه‌های واقعی نیست. این‌ها ماجراهای واقعی و مستندِ پروژه‌های هوشِ مصنوعی در شرکت‌های بزرگ‌اند — شکست‌های چند صد میلیون دلاری و موفقیت‌های اندازه‌گیری‌شده. هر کدام را بخوان، لینکِ مقالهٔ اصلی را ببین، و «درسِ» آن را به خاطر بسپار؛ بعد تیک بزن. این پرونده‌ها همان چیزی‌اند که در مصاحبه و جلسه، تو را از بقیه جدا می‌کنند.",
+  caseLbl:n=>`بررسی‌شده از ${n}`,
+  lesson:"درس:",
+  booksHead:"کتابخانهٔ مدیرِ پروژه",
+  booksSub:"۹ کتاب به ترتیبِ پیشنهادیِ خواندن: پنج کتابِ اول پایه‌های مدیریتِ پروژه را می‌سازند و چهار کتابِ بعدی تو را به دنیای AI می‌برند. برای هر کتاب یک خلاصهٔ فشرده نوشته شده تا قبل از خریدن بدانی چه چیزی از آن می‌گیری — اما خلاصه جای کتاب را نمی‌گیرد. هر کدام را که تمام کردی تیک بزن.",
+  bookLbl:n=>`خوانده‌شده از ${n}`,
+  author:"نویسنده",
+  toolsHead:"جعبه‌ابزارِ مدیرِ پروژهٔ عصرِ AI",
+  toolsSub:"ابزارهایی که یک مدیرِ پروژه در ۲۰۲۶ باید بشناسد — از بردهای سادهٔ کانبان تا دستیارهای AI. لازم نیست همه را یاد بگیری؛ یکی از هر دسته کافی است. برای هرکدام لینکِ سایتِ رسمی و یک ویدیوی آموزشیِ دقیق گذاشته شده است.",
+  siteBtn:"وب‌سایتِ رسمی", videoBtn:"ویدیوی آموزشی", docsBtn:"آموزش و مستندات",
+  footNote:"پیشرفت، زبان و حالتِ رنگ خودکار ذخیره می‌شوند. دکمه‌های ویدیو مستقیم به ویدیوی دقیق در یوتیوب لینک شده‌اند و مقاله‌ها به منبعِ اصلی.",
+  reset:"پاک‌کردن پیشرفت",
+  confirmReset:"کل پیشرفت پاک شود؟ این عمل برگشت‌پذیر نیست.",
+  saved:"ذخیره شد", sessionOnly:"فقط در این جلسه",
+  pctChar:"٪",
+  tags:{"شکست":"شکست","موفقیت":"موفقیت","نکته‌دار":"نکته‌دار"}
+ },
+ en:{
+  docTitle:"PM Roadmap — Zero to AI Project Manager",
+  eyebrow:"PM Quest · Project Management Roadmap",
+  pageTitle:'From <span class="pop">zero</span> to managing <span class="pop">AI</span> projects',
+  pageSub:"A level-by-level path for someone with no technical, design, or product background: first the basics of project management, then planning and execution, then Agile and people skills, and finally AI literacy and managing real AI projects. Complete a level and the next node on the path lights up.",
+  dark:"Dark mode", light:"Light mode",
+  kpiLbl:"Overall progress",
+  statH:"Learning hours", statM:"Levels completed", statI:"Tasks done",
+  of:"of", hUnit:"hours", mUnit:"levels", iUnit:"items",
+  sections:{roadmap:"Roadmap", cases:"Case Studies", books:"Library", tools:"Toolbox"},
+  kind:{concept:"Concept",practice:"Hands-on",project:"Project",ai:"AI prompt"},
+  minutes:"min", hoursShort:"h",
+  itemsOf:(a,b)=>`${a} of ${b} items`,
+  casesOf:(a,b)=>`${a} of ${b} cases`,
+  booksOf:(a,b)=>`${a} of ${b} books`,
+  copyPrompt:"Copy prompt", copied:"Copied ✓", copyFail:"Copy failed",
+  casesHead:"Real AI project case studies",
+  casesSub:"No lesson beats a real project. These are documented, real-world AI projects at major companies — nine-figure failures and carefully measured wins. Read each one, open the original article, remember the lesson, then tick it off. These files are exactly what will set you apart in interviews and meetings.",
+  caseLbl:n=>`reviewed out of ${n}`,
+  lesson:"Lesson:",
+  booksHead:"The project manager's library",
+  booksSub:"Nine books in a suggested reading order: the first five build your project-management foundation, the next four take you into the AI world. Each comes with a compact summary so you know what you'll get before buying — but a summary never replaces the book. Tick each one you finish.",
+  bookLbl:n=>`read out of ${n}`,
+  author:"Author",
+  toolsHead:"The AI-era project manager's toolbox",
+  toolsSub:"The tools a project manager should know in 2026 — from simple Kanban boards to AI assistants. You don't need them all; one per category is enough. Each card links to the official site plus a hand-picked tutorial video.",
+  siteBtn:"Official website", videoBtn:"Video tutorial", docsBtn:"Docs & tutorials",
+  footNote:"Progress, language, and theme are saved automatically. Video buttons link straight to the exact YouTube videos; articles link to the original sources.",
+  reset:"Reset progress",
+  confirmReset:"Clear all progress? This cannot be undone.",
+  saved:"Saved", sessionOnly:"This session only",
+  pctChar:"%",
+  tags:{"شکست":"Failure","موفقیت":"Success","نکته‌دار":"Nuanced"}
+ }
+};
+const S=k=>STR[lang][k];
+
+const EN_LEVELS={
+ L0:{name:"What is a project? Ground zero",star:"Start from zero",intro:"Before any tool or method, you need to understand what a “project” even is and what a project manager really does. Good news: you already manage projects — parties, moves, trips. This level translates that everyday experience into professional language and <b>assumes no background at all</b>."},
+ L1:{name:"The life cycle & planning",star:"",intro:"Every project follows a repeating path: <b>initiate, plan, execute, monitor, close</b>. This level is your skeleton: write a project charter, break big work into small pieces, estimate honestly, and build a realistic schedule — on paper, with no complicated software."},
+ L2:{name:"Execution: risk, communication, tracking",star:"",intro:"The plan is only the beginning; projects live or die in <b>execution</b>. This level builds the four vital habits: seeing risk before it lands, writing status reports people actually read, running meetings that reach decisions, and taming the monster called scope creep."},
+ L3:{name:"Agile: Scrum & Kanban",star:"The language of modern teams",intro:"Almost every software and AI team works with <b>Agile</b>: instead of one big upfront plan, short loops of building, showing, and learning. If you don't speak Scrum and Kanban, you're a stranger in those meetings — and this level teaches you exactly that language."},
+ L4:{name:"People skills",star:"",intro:"Projects are moved by people, not Gantt charts. The hardest part of your job is <b>leading without formal authority</b>: aligning people who don't report to you. This level builds four everyday skills: stakeholder mapping, saying no, handling conflict, and remote teamwork."},
+ L5:{name:"AI literacy in plain language",star:"Gateway to the AI world",intro:"You don't need to become a programmer to manage AI projects — but you must <b>speak the language</b> so you're never lost in meetings and can spot unrealistic promises. This level, without a single line of code, tells you what AI is, what it can and can't do, and what its words mean."},
+ L6:{name:"Managing AI projects",star:"The core",intro:"Everything converges here. AI projects are <b>inherently experimental</b>: nobody knows in advance how good the model will be, and a large share of projects never reach production. Managing that uncertainty — with phased bets, clear success metrics, and AI-specific risks — is exactly the skill the job market is starving for."},
+ L7:{name:"Going professional in the AI era",star:"",intro:"The final loop: make AI your <b>daily assistant</b>, learn the certification landscape, and turn your experience into a portfolio and a network. From here, growth means repetition: take on real projects — even small, volunteer ones — and run this cycle again and again."}
+};
+
+const EN_ITEMS={
+ L0a:{t:"What is a project (and what isn't)",desc:"A project is a temporary effort with a clear start, end, and outcome — unlike routine, repeating work (operations). This simple distinction decides what needs a plan and an ending, and what is just an ongoing process."},
+ L0b:{t:"The iron triangle: scope, time, cost",desc:"Every project is squeezed between three constraints: what we build (scope), by when (time), and with how much money (cost) — with quality sitting in the middle. A project manager's craft is trading between those three; touch one and the others move."},
+ L0c:{t:"Stakeholders: who cares about your project",desc:"A stakeholder is anyone the project affects or who can affect the project: sponsor, customer, team, even opponents. Most failures start not with technology but with a key person being ignored."},
+ L0d:{t:"What a project manager actually does",desc:"The PM is neither everyone's boss nor the technical expert; they keep the goal clear, align people, remove obstacles, and get the right news to the right person. This role is above all communication and discipline — not coding."},
+ L0e:{t:"Turn AI into your Socratic coach",desc:"From day one, turn AI from an answer machine into a teacher that asks you questions. Copy this prompt and use it with every lesson on this roadmap.",prompt:"From this moment, play a strict but supportive project management coach. Rule: never give a direct answer. When I ask about a concept, first help me reach it myself with two or three short questions drawn from everyday experience (parties, trips, moving house). If my answer is incomplete, only tell me what I missed. At the end of each part, ask one question to make sure I truly understood. Today's topic: ..."},
+ L0f:{t:"Project: manage a personal project “officially”",desc:"Pick something real ahead of you (a party, a weekend trip) and write down: the goal in one sentence, three stakeholders, scope/time/cost, and the task list. That single page is your first real project management document."},
+ L1a:{t:"The five phases of the project life cycle",desc:"Initiate (why and what), plan (how and when), execute (build), monitor and control (are we on track?), and close (hand over and learn). This mental map tells you where you are standing at any moment and what the next step is."},
+ L1b:{t:"The project charter: a one-page start",desc:"The charter is one page that says: why this project, what success looks like, who sponsors it, and where the boundaries are. That single page prevents the biggest project killer — “everyone thought we were building something different”."},
+ L1c:{t:"Breaking down work: the WBS",desc:"A work breakdown structure means splitting the big outcome, step by step, into small deliverable pieces until nothing big and scary is left. Golden rule: if you can't estimate a piece, you haven't broken it down enough."},
+ L1d:{t:"Estimates, buffers & milestones",desc:"Humans estimate optimistically by nature; that's why you need buffers (margin for error) and milestones (checkable stations). Learn to give ranges instead of single numbers, and to measure progress by real deliverables — not by “90% done”."},
+ L1e:{t:"Scheduling & Gantt charts",desc:"A Gantt chart is the visual of tasks on a timeline: what, when, depending on what. Build one once — by hand or in a simple tool — and the “critical path”, the chain where any slip delays the whole project, becomes tangible."},
+ L1f:{t:"AI exercise: draft a charter, then interrogate it",desc:"Ask AI to draft the charter for your personal project — then critique it yourself. The goal is learning that AI output is the start of your thinking, not the final document.",prompt:"I want to write a one-page charter for this project: “[project description]”. First ask me the five questions I must answer for the charter. After my answers, write the draft in this format: goal, success metric, key stakeholders, scope (in/out), top risks, and milestones. Finally, honestly list three weaknesses of the very charter you just wrote."},
+ L1g:{t:"Project: a full plan for an event",desc:"For an imaginary event (say, a small product launch), build the full package: a one-page charter, a WBS with at least 15 pieces, estimates with buffers, and a simple Gantt with three milestones. This package is your first real work sample."},
+ L2a:{t:"Risk management & the RAID log",desc:"A risk is something that hasn't happened yet but would shake the project if it did. The RAID log (Risks, Actions, Issues, Dependencies) is the simplest professional tool: record every risk with likelihood, impact, and an owner — and review weekly."},
+ L2b:{t:"Status reports & the communication plan",desc:"A good status report answers three questions: where are we, what's blocking us, and what help do we need — in language an executive can absorb in 60 seconds. The communication plan says who gets which news, how often."},
+ L2c:{t:"Meetings that reach decisions",desc:"A meeting without an agenda is the most expensive waste in any organization. The simple formula: a clear goal + a time-boxed agenda + minutes with “decisions and actions, each with an owner and a deadline”. Those three items alone put you ahead of most meeting-goers."},
+ L2d:{t:"Scope creep & change management",desc:"Scope creep is “just add this one tiny thing” — and the hundred times after it. Change isn't bad; unrecorded change is. Learn to put every request on the table with its impact on time and cost, so decisions are made consciously."},
+ L2e:{t:"Project budgets in plain words",desc:"A budget is nothing more than the estimated cost of the work plus a contingency reserve, and then tracking “how much we spent versus how far we got”. Report the gap between those two monthly and you're ahead of most rookie managers."},
+ L2f:{t:"AI exercise: generate a risk register, then judge it",desc:"AI is superb at generating risk lists — and weak at prioritizing them for your specific project. Let it produce; you judge and choose like the project's owner.",prompt:"Here is my project: “[description]”. List fifteen plausible risks, each with likelihood (low/medium/high), impact severity, and one preventive action. Then ask me which five I consider most real and why; afterwards critique my selection: which important risk am I underestimating?"},
+ L2g:{t:"Project: two weeks of execution with weekly reports",desc:"Actually run your Level 1 project for two weeks: keep a RAID log, write a one-page status report each week, and record and assess one real change request. Execution is where the real learning happens."},
+ L3a:{t:"Waterfall vs. Agile",desc:"Waterfall means plan everything fully, then build; Agile means build in short cycles, show, and correct course. Neither is sacred — a construction project wants waterfall, an AI product wants agile. What matters is knowing when to use which."},
+ L3b:{t:"Scrum: roles, events, artifacts",desc:"Scrum is the most common Agile framework: three roles (product owner, scrum master, team), regular events (sprint, planning, daily standup, review, retrospective), and artifacts (backlog and increment). The official guide is only 14 pages — read it."},
+ L3c:{t:"Kanban: see the flow of work",desc:"Kanban is the world's simplest system: columns for To Do / Doing / Done, and one golden rule — a WIP limit on simultaneous work. Seeing work on a board and capping work-in-progress solves half a team's problems by itself."},
+ L3d:{t:"User stories & the backlog",desc:"A user story defines work from a real person's angle: “As a [user], I want [thing], so that [value]”. The backlog is the prioritized list of those stories. This simple format is what makes conversation possible between technical and non-technical people."},
+ L3e:{t:"Hands-on: build your own Kanban board",desc:"In Trello (or any free tool) create a board with Backlog / Doing / Done columns and load in the tasks of this very roadmap; cap Doing at three. From today you manage your learning with the same tool real teams use."},
+ L3f:{t:"AI exercise: a personal retrospective",desc:"The retrospective is the heart of learning in Agile: what went well, what didn't, what we change. With this prompt, make AI your weekly retro facilitator and build the habit now.",prompt:"Play the facilitator of a retrospective meeting. Ask me about my past week: (1) What went well? (2) What didn't? (3) What do I not know that is bothering me? Ask the questions one at a time and take short answers. At the end, summarize and help me pick exactly ONE specific, doable change for next week — no more."},
+ L3g:{t:"Project: a one-week sprint",desc:"Pick a small personal goal and run one complete one-week sprint: planning (choose the stories), a two-minute daily standup with yourself, and a review and retro at the end. After this experience, Scrum's words become alive for you."},
+ L4a:{t:"Stakeholder mapping: the power/interest grid",desc:"Not all stakeholders are managed alike: keep the high-power/high-interest close, keep the high-power/low-interest satisfied, and keep the rest informed. This simple two-by-two grid makes your communication strategy professional overnight."},
+ L4b:{t:"Saying no & negotiating scope",desc:"A project manager who says yes to everything has committed to nothing. The professional “no” is: “yes, provided that” — showing the cost of each request and offering an alternative. This skill builds your credibility rather than damaging it."},
+ L4c:{t:"Conflict: a sign of health, not disaster",desc:"A team with no conflict is either indifferent or afraid. Good conflict is about ideas, not people; your job is to surface disagreement early, anchor it to data and the shared goal, and never let it grow under the carpet."},
+ L4d:{t:"Leading without formal authority",desc:"When nobody reports to you, your only capital is trust: being transparent, being consistent, giving credit, and clearing people's obstacles. People follow the project manager who makes their work easier, not harder."},
+ L4e:{t:"Remote & asynchronous work",desc:"In today's teams (especially AI teams, which are often distributed) writing well matters more than meeting well: decisions in writing, updates asynchronous, and meetings reserved for things that truly need conversation."},
+ L4f:{t:"AI exercise: rehearse the hard conversation",desc:"The scariest part of the job — delivering bad news or saying no to a powerful person — is trainable. Let AI play the other side so this muscle gets built in a safe room.",prompt:"Play my project sponsor: busy, results-driven, slightly impatient. I have to tell you the project is two weeks late and explain why. Be tough, interrupt me, demand immediate solutions — but stay fair. When the conversation ends, step out of the role and critique my performance: where was I good, where did I get defensive, and which sentence should I have said differently?"},
+ L5a:{t:"AI & machine learning in plain words",desc:"Machine learning means the system learns patterns from many examples instead of a programmer writing rules. That one sentence is the key to everything: an AI is only as good as the examples it has seen — which is why “data” dominates every AI meeting."},
+ L5b:{t:"How language models (LLMs) work",desc:"Models like ChatGPT and Claude are next-word guessers at colossal scale — not databases of facts. That's why they speak fluently and confidently yet are sometimes confidently wrong (hallucination). Understanding this mechanism makes your expectations realistic."},
+ L5c:{t:"Data: the fuel of every AI project",desc:"“Garbage in, garbage out” is AI's first law: little, dirty, or biased data means a bad model — no matter how smart the team. As the PM you must always ask: where does the data come from, what shape is it in, and who labeled it?"},
+ L5d:{t:"What AI can and cannot do",desc:"AI shines on repeating patterns with plentiful data and stumbles on common sense, novel situations, and rare cases — sometimes failing in ways no human would. Telling a “good AI problem” from a bad one may be your single most valuable skill in this field."},
+ L5e:{t:"A survival glossary for AI meetings",desc:"Training, inference, fine-tuning, RAG, prompts, evals, hallucination, drift — these words circle every meeting. You don't need to implement any of them; you need to know what each means and when it matters."},
+ L5f:{t:"Prompt engineering for project managers",desc:"Getting good output from AI is a skill of its own: give context, assign a role, request an output format, and show examples. Keep this prompt and use it daily — real use is the best practice.",prompt:"I want to improve my prompt writing. Here is a prompt I wrote: “[paste your prompt]”. First tell me what important ingredients (context, role, output format, examples, constraints) are missing from it. Then write the improved version, annotating each change with why it makes the output better. Finally, state one general rule I should learn from this case."},
+ L5g:{t:"Project: one week with an AI assistant",desc:"For one week, do at least one real management task per day with AI (meeting minutes, email drafts, risk lists, weekly plans) and log in a table: where it excelled, where it broke, where you had to redo. That log is your real understanding of AI."},
+ L6a:{t:"Why AI projects are different (and often fail)",desc:"In normal software, “buildable” is nearly certain; in AI, months of work may never push model accuracy to a usable level. So an AI project must be run as a series of experiments — hypothesis, small test, continue/stop decision — not as an assembly line."},
+ L6b:{t:"The AI project life cycle",desc:"The standard path: frame the problem → understand and prepare data → build and try models → evaluate → deploy → monitor continuously. Two big differences from a normal project: the loops repeat many times, and the work isn't done at delivery because models decay in the real world (drift)."},
+ L6c:{t:"The AI team: who does what",desc:"The data scientist builds models and experiments, the data engineer builds the data plumbing, the ML engineer turns models into stable products, and annotators prepare training data. Your job is translation between these people and the business — so you must speak both languages."},
+ L6d:{t:"Defining success: technical vs. business metrics",desc:"A “95% accurate model” can be worthless to the business, and an 80% one pure gold. Before starting, two things must be explicit: the technical metric (accuracy on which data?) and the business metric (which number must move?) — plus a definition of “good enough” to ship."},
+ L6e:{t:"AI-specific risks: bias, hallucination, privacy, law",desc:"AI carries risks ordinary projects don't: hidden bias in data, confident hallucination, personal-data leaks, and regulations like the EU AI Act with serious obligations for high-risk systems. An AI risk register without these columns is incomplete."},
+ L6f:{t:"Magical demo, real product",desc:"The most dangerous moment of an AI project is the day of the successful demo: leadership thinks it's done, while the distance from demo to dependable product is often 80% of the road. Your job is managing exactly that expectation: small pilots, pass criteria, and the courage to stop if the numbers don't arrive."},
+ L6g:{t:"AI exercise: feasibility-check an AI idea",desc:"With this prompt you learn to dissect every “let's do it with AI” idea like a professional before promising anything: data, metrics, risks, and the cheaper no-AI path.",prompt:"This AI idea has been proposed to me: “[idea]”. Play a skeptical but fair consultant and help me assess feasibility: (1) Exactly what prediction or generation is supposed to happen? (2) What data is needed and what is probably wrong with it? (3) What should the technical and business success metrics be? (4) The top three risks? (5) Is there a simpler path without AI? Finish with a go/no-go recommendation and the reasoning."},
+ L6h:{t:"Project: the AI project one-pager",desc:"For a real idea (say, a support chatbot for a small shop) write the one-page document: problem, user, available data, technical and business metrics, phases (experiment → pilot → rollout), risks with responses, and a stop condition. This document is your golden work sample."},
+ L7a:{t:"AI as the project manager's assistant",desc:"Professional PMs now start meeting minutes, report drafts, risk analyses, and communication plans with AI, and spend the freed time on people and decisions. Your value is judgment; let AI type the first draft."},
+ L7b:{t:"The certification map: where to start",desc:"The sensible path for a beginner: first the Google Project Management Certificate (no prerequisites), then PMI's CAPM, and later — with three years of experience — the PMP; add PSM if you go deep on Agile. A certificate never replaces experience, but it opens interview doors."},
+ L7c:{t:"The project manager's portfolio",desc:"Your portfolio isn't screenshots; it's the story of documents: the charter, WBS, status reports, risk log, and AI one-pager you built along this path — plus the narrative of “what the problem was, what I did, what happened”. That folder puts you ahead of most applicants with no tangible work."},
+ L7d:{t:"Community & network",desc:"Joining PMI and local or online PM communities brings both learning and opportunities; most roles change hands inside these networks before any job ad. Small regular presence beats occasional grand appearances."},
+ L7e:{t:"AI exercise: the interview simulator",desc:"PM interviews follow known patterns: situational questions (“tell me about a time when...”). Practice with AI until you can tell your stories fluently in the STAR structure (Situation, Task, Action, Result).",prompt:"Play the interviewer for a “junior project manager with an AI focus” position. Ask five situational questions — one at a time — and after each of my answers give feedback: did it follow the STAR structure? What detail was missing? Which sentence hurt me? Raise the difficulty gradually, and make the final question about managing a failed AI project."},
+ L7f:{t:"Capstone: the full rollout plan for an AI chatbot",desc:"Scenario: a small business wants a support chatbot and you are the project manager. Build the complete package: charter, stakeholders, WBS, phased schedule (experiment/pilot/rollout), a risk log with AI-specific risks, success metrics, and a communication plan. This is the practical thesis of the whole roadmap."}
+};
+
+const CASE_GROUP_EN={
+ CSF:{name:"Instructive failures",intro:"Six real projects that failed with the best teams and huge budgets. Watch the patterns: unsuitable data, overpromising, and unmanaged expectations — not technical weakness."},
+ CSS:{name:"Wins & subtle lessons",intro:"AI success isn't a simple story either: a winning algorithm never deployed, an assistant followed by the return of humans, and claims that only meant something once measured in a controlled experiment."}
+};
+
+const CASE_EN={
+ CSzillow:{t:"Zillow Offers: the model that overpaid for houses",desc:"Zillow bought and sold homes with an algorithmic pricing model. In 2021 it admitted that home-price unpredictability was “far beyond what we anticipated”: a $421.6M loss in a single quarter, the entire business shut down, and 25% of staff laid off.",lesson:"Model uncertainty is business risk; translate the model's error margin into money before betting big."},
+ CSwatson:{t:"IBM Watson Health: big promise, small result",desc:"After winning Jeopardy!, IBM promised Watson would transform cancer care. Eight years later, IEEE Spectrum's report showed real clinical results were minimal: messy medical data and the vast demo-to-clinic gap sank the project.",lesson:"Between the marketing demo and messy real-world data lies an ocean; start small and narrow."},
+ CSamazon:{t:"Amazon's recruiting tool: bias straight from the data",desc:"From 2014 Amazon built a resume-screening model trained on ten years of mostly male applications. It penalized resumes containing the word “women's” and downgraded graduates of two all-women's colleges; the project was scrapped by 2017.",lesson:"A model mirrors its historical data: if the past was biased, your product is too — unless you actively prevent it."},
+ CSaircanada:{t:"Air Canada's chatbot: the hallucination that went to court",desc:"Air Canada's chatbot gave wrong information about bereavement fares. In 2024 a tribunal rejected the airline's argument that the bot was “a separate legal entity” and ordered it to pay damages: a company is responsible for what its bot says.",lesson:"Every promise your AI makes is your promise; put guardrails and a human path on sensitive content."},
+ CSmcd:{t:"McDonald's voice ordering: the end of a three-year pilot",desc:"From 2021 McDonald's tested AI voice ordering with IBM at over 100 drive-thrus; viral videos of absurd orders followed, and in June 2024 it announced the test would end. A bold pilot with a timely exit — that, too, is good management.",lesson:"A pilot exists to learn, not to guarantee success; define pass criteria and the courage to stop on day one."},
+ CSepic:{t:"Epic's sepsis model: vendor numbers vs. reality",desc:"Epic's sepsis prediction model was used in hundreds of hospitals. Michigan Medicine's independent validation (JAMA) found real-world accuracy far below the vendor's claim: it missed about two-thirds of cases while alerting on 18% of all patients.",lesson:"Verify vendor numbers on your own data; “it worked elsewhere” means nothing."},
+ CSnetflix:{t:"Netflix's $1M prize that never shipped",desc:"In 2009 Netflix paid $1M for an algorithm with a 10% prediction improvement — and never fully deployed it: the engineering cost outweighed the gain, and the business had shifted from DVDs to streaming, changing the problem itself.",lesson:"More accuracy isn't value by itself; value = gain minus integration cost — and the problem statement has a shelf life."},
+ CScopilot:{t:"GitHub Copilot: a productivity claim backed by an experiment",desc:"Instead of slogans, GitHub published a controlled experiment: among 95 developers, the Copilot group finished the task 55% faster (1:11 vs 2:41) with a higher completion rate; a 2,000-person survey also showed more satisfaction and flow.",lesson:"Sell AI claims with controlled experiments and clear metrics — that's what buys stakeholder trust."},
+ CSklarna:{t:"Klarna's assistant: the work of 700 people — then humans return",desc:"Klarna's AI assistant handled 2.3 million conversations in its first month — two-thirds of all support chats, the work of 700 agents, with resolution under 2 minutes. But in 2025 the CEO announced rehiring humans for quality: “human customer service is always going to be a VIP thing”.",lesson:"Savings is not the whole metric; measure experience quality too, or the backlash returns."},
+ CSduolingo:{t:"Duolingo and the “AI-first” bet",desc:"In 2025 Duolingo's CEO declared the company “AI-first”: gradually stopping contractor work AI can handle, and approving new hires only when the work can't be automated. They chose speed over flawless quality — and took a wave of public backlash.",lesson:"An AI transformation is not just a technical project; change management and the public narrative are equally your job."}
+};
+
+const BOOK_GROUP_EN={
+ BKPM:{name:"PM foundations",intro:"Five books in reading order: from a step-by-step beginner's guide to a tech novel and classic essays. The goal: the language and intuition of a real project manager."},
+ BKAI:{name:"AI for decision-makers",intro:"Four books that build the right mindset about AI without math or code: the economics of decisions, daily work with AI, redesigning processes, and entry into the specialist role."}
+};
+
+const BOOK_EN={
+ BKhorine:{sum:"The ground-zero textbook: it walks the whole cycle step by step — initiation, planning, scheduling, budgeting, leading the team, change control, and closing — with checklists, plain language, and zero assumed knowledge. Best use: read it alongside Levels 0–2 of this roadmap and apply its templates to your own personal project."},
+ BKunofficial:{sum:"For people who suddenly own projects without the title — exactly you. FranklinCovey's formula is “people + process” around the five stages of Initiate/Plan/Execute/Monitor/Close, with an emphasis on informal authority: leading people who don't report to you. A fast, practical read; the perfect companion to Level 4."},
+ BKscrum:{sum:"The story of Scrum from its co-creator: why long waterfall plans lie, and how short sprints, small teams, a prioritized backlog, and retrospectives multiply productivity. Full of real tales — from the FBI to carmakers — and the best companion for Level 3; follow it with the official 14-page Scrum Guide."},
+ BKphoenix:{sum:"A novel: an ordinary manager is dropped into a collapsing tech project and rescues it step by step. Without noticing, you absorb flow, bottlenecks, WIP limits, and the “Three Ways” behind DevOps. For non-technical readers it's the best way to understand how technology work actually flows — and where it jams."},
+ BKmmm:{sum:"The 1975 classic still present in every planning meeting, with its famous law: “adding manpower to a late software project makes it later” — because communication overhead explodes with team size. The examples are old but the truths alive: why estimates are optimistic and why small, cohesive teams win. The anniversary edition includes the “No Silver Bullet” essay."},
+ BKprediction:{sum:"Three economists reduce AI to one sentence: “cheap prediction”. When prediction gets cheap, human judgment and data become precious — and with that lens you can tell, with zero technical knowledge, where AI pays off in a business and where it's theater. The updated (2022) edition made The Economist's list of the five best books for understanding AI. Level 6's mental framework comes from here."},
+ BKcoint:{sum:"The most practical book on working with AI daily, by a Wharton professor: treat AI like a strange teammate — always invite it to the table, stay the human in the loop, tell it who to be, and assume it's the worst AI you'll ever use. Rich in examples, free of hype, entirely non-technical; the best first AI book and a companion to Level 5."},
+ BKhm:{sum:"Built on research across 1,500 organizations, it shows AI's real value lies not in removing humans but in the “missing middle”: new roles where humans train and explain machines, and machines amplify humans. For a PM who must redesign processes around AI — not just add tools — it's a roadmap; the updated edition adds a chapter on generative AI."},
+ BKaipm:{sum:"The bridge into the specialist role: the ML product life cycle from idea to deployment and monitoring, working with data scientists, success metrics, and ethics — from the seat of the person running the product and project, not the coder. The most technical book on this list; read it last, once Levels 5 and 6 have made the vocabulary familiar."}
+};
+
+const CAT_EN={
+ "کانبانِ ساده":"Simple Kanban",
+ "مدیریتِ کار":"Work management",
+ "اجایلِ حرفه‌ای":"Agile at scale",
+ "سند و دانش":"Docs & knowledge",
+ "اجایلِ مدرن":"Modern agile",
+ "وایت‌بردِ آنلاین":"Online whiteboard",
+ "گانت و برنامه":"Gantt & scheduling",
+ "ارتباطِ تیمی":"Team communication",
+ "دستیارِ جلسه":"Meeting assistant",
+ "دستیارِ AI":"AI assistant"
+};
+
+const TOOL_EN={
+ "Trello":"The world's simplest Kanban board: columns and cards, nothing more. The best starting point for seeing your flow of work — build your personal board today.",
+ "Asana":"Team work management with list, board, calendar, and timeline views; a favorite of non-technical teams. A safe, friendly choice for your first multi-person projects.",
+ "Jira":"The standard for software and AI teams running Scrum and Kanban: sprints, backlogs, burndowns. If you work with technical teams, you'll end up here sooner or later.",
+ "Notion":"All-in-one docs, wiki, and databases with built-in AI; the home for charters, meeting minutes, and risk logs. Your project's written second brain — and great practice for a writing culture.",
+ "ClickUp":"The everything tool: tasks, docs, goals, and dashboards in one place with built-in AI. For someone who wants a single tool for it all.",
+ "monday.com":"Colorful, customizable boards with simple automations; loved by operations and marketing teams. Quick to learn, and it demos beautifully to employers.",
+ "Linear":"The darling of product startups: fast, minimal, keyboard-driven issues and sprints. If you work with modern product teams, it's their daily language.",
+ "Miro":"An endless whiteboard for workshops, stakeholder maps, flowcharts, and retrospectives. Where the team's thinking becomes visible; gold for remote meetings.",
+ "Smartsheet":"A professional project spreadsheet with Gantt, dependencies, and critical path. When you need serious scheduling and formal reporting, this is home.",
+ "Slack":"The standard team messenger with topic channels and connections to every tool. Running the project channel and posting regular summaries is part of your daily job.",
+ "Otter.ai":"Automatic meeting notes: recording, transcript, and a summary with action items. While you're busy in the conversation, it takes the notes — one of a PM's fastest AI wins.",
+ "Fireflies.ai":"Otter's rival with powerful search across your meeting archive and connections to work tools. It becomes your project's collective meeting memory; pick one of the two.",
+ "ChatGPT":"OpenAI's all-purpose assistant for drafts, analysis, summaries, and brainstorming. With this roadmap's prompts, turn it into your daily management arm.",
+ "Claude":"Anthropic's AI assistant, strong with long texts and documents: analyzing contracts, digesting long reports, structured writing. A superb partner for the document-heavy side of PM work."
+};
+
+const RES_EN={
+ "مرجع: PMI — مدیریتِ پروژه چیست":"Reference: PMI — What is Project Management",
+ "ویکی‌پدیا: مثلثِ مدیریتِ پروژه":"Wikipedia: the project management triangle",
+ "مرجع: ذی‌نفعِ پروژه (PMI)":"Reference: project stakeholders (PMI)",
+ "مرجع: چرخهٔ حیاتِ پروژه (PMI)":"Reference: the project life cycle (PMI)",
+ "مانیفستِ اجایل":"The Agile Manifesto",
+ "مرجع: Atlassian Agile Coach":"Reference: Atlassian Agile Coach",
+ "راهنمای رسمی: Scrum Guide":"Official guide: the Scrum Guide",
+ "مرجع: کانبان (Atlassian)":"Reference: Kanban (Atlassian)",
+ "مرجع: یوزر استوری (Atlassian)":"Reference: user stories (Atlassian)",
+ "دورهٔ رایگان: AI for Everyone (Coursera)":"Free course: AI for Everyone (Coursera)",
+ "دورهٔ رایگان: Elements of AI":"Free course: Elements of AI",
+ "ویکی‌پدیا: CRISP-DM":"Wikipedia: CRISP-DM",
+ "مرجع: EU AI Act Explorer":"Reference: EU AI Act Explorer",
+ "گواهینامهٔ Google Project Management":"Google Project Management Certificate",
+ "مرجع: گواهینامه‌های PMI":"Reference: PMI certifications",
+ "وب‌سایتِ PMI":"PMI website",
+ "مقاله: CNBC":"Article: CNBC",
+ "مقاله: IEEE Spectrum":"Article: IEEE Spectrum",
+ "گزارشِ Reuters (Euronews)":"Reuters report (via Euronews)",
+ "مقاله: CBS News":"Article: CBS News",
+ "گزارش: Michigan Medicine":"Report: Michigan Medicine",
+ "مقاله: Techdirt":"Article: Techdirt",
+ "پژوهش: GitHub Blog":"Research: the GitHub Blog",
+ "بیانیه: Klarna (PR Newswire)":"Press release: Klarna (PR Newswire)",
+ "مقاله: TechCrunch":"Article: TechCrunch",
+ "مقاله: The Register":"Article: The Register",
+ "صفحهٔ ناشر: Pearson":"Publisher page: Pearson",
+ "صفحهٔ FranklinCovey":"FranklinCovey page",
+ "صفحهٔ ناشر: Penguin Random House":"Publisher page: Penguin Random House",
+ "صفحهٔ ناشر: IT Revolution":"Publisher page: IT Revolution",
+ "صفحهٔ ناشر: HBR Press":"Publisher page: HBR Press",
+ "صفحهٔ ناشر: Packt":"Publisher page: Packt"
+};
+
+/* Exact YouTube videos (all verified via YouTube oEmbed) */
+const VIDEOS={
+ L0a:{url:"https://www.youtube.com/watch?v=ztmaTF_Qs9A",fa:"ویدیو: مدیریتِ پروژه چیست (ProjectManager)",en:"Video: What is Project Management (ProjectManager)"},
+ L0b:{url:"https://www.youtube.com/watch?v=JHSHOAfV-uw",fa:"ویدیو: مثلثِ آهنین (Mike Clayton)",en:"Video: the Iron Triangle (Mike Clayton)"},
+ L0d:{url:"https://www.youtube.com/watch?v=gu-z9EbIZ5k",fa:"ویدیو: مدیرِ پروژه چه می‌کند (Adriana Girdler)",en:"Video: what a PM does (Adriana Girdler)"},
+ L1a:{url:"https://www.youtube.com/watch?v=7d9zzrh_ep0",fa:"ویدیو: پنج فازِ چرخهٔ حیات",en:"Video: the 5 project phases"},
+ L1b:{url:"https://www.youtube.com/watch?v=xMEWgSpe83A",fa:"ویدیو: نوشتنِ منشور (TeamGantt)",en:"Video: writing a charter (TeamGantt)"},
+ L1c:{url:"https://www.youtube.com/watch?v=BVcd9uy9kuQ",fa:"ویدیو: WBS (Adriana Girdler)",en:"Video: the WBS (Adriana Girdler)"},
+ L1e:{url:"https://www.youtube.com/watch?v=MbYK_UqjJuc",fa:"ویدیو: گانت‌چارت (TeamGantt)",en:"Video: Gantt charts (TeamGantt)"},
+ L2a:{url:"https://www.youtube.com/watch?v=Nwl7PquhU5U",fa:"ویدیو: مدیریتِ ریسک ۱۰۱ (Mike Clayton)",en:"Video: Risk Management 101 (Mike Clayton)"},
+ L2b:{url:"https://www.youtube.com/watch?v=48iL3tmDuVI",fa:"ویدیو: گزارشِ وضعیتِ خوب (TeamGantt)",en:"Video: a good status report (TeamGantt)"},
+ L2c:{url:"https://www.youtube.com/watch?v=tCbUqmgcyQM",fa:"ویدیو: جلسهٔ اثربخش (MTD)",en:"Video: effective meetings (MTD)"},
+ L2d:{url:"https://www.youtube.com/watch?v=lKcJW1XqY4E",fa:"ویدیو: مهارِ خزشِ محدوده",en:"Video: preventing scope creep"},
+ L3a:{url:"https://www.youtube.com/watch?v=Y__4iXoUNH4",fa:"ویدیو: اجایل در برابرِ آبشاری",en:"Video: Agile vs. Waterfall"},
+ L3b:{url:"https://www.youtube.com/watch?v=XU0llRltyFM",fa:"ویدیو: اسکرام در ۱۰ دقیقه (Axosoft)",en:"Video: Scrum in under 10 minutes (Axosoft)"},
+ L3c:{url:"https://www.youtube.com/watch?v=iVaFVa7HYj4",fa:"ویدیو: کانبان چیست (Atlassian)",en:"Video: What is Kanban (Atlassian)"},
+ L3d:{url:"https://www.youtube.com/watch?v=By54f9eRkt4",fa:"ویدیو: یوزر استوری در ۱۵ دقیقه",en:"Video: user stories in 15 minutes"},
+ L4a:{url:"https://www.youtube.com/watch?v=G3R4TO1l6LY",fa:"ویدیو: شبکهٔ قدرت/علاقه",en:"Video: the power/interest grid"},
+ L5a:{url:"https://www.youtube.com/watch?v=qYNweeDHiyU",fa:"ویدیو: AI و ML و GenAI (IBM)",en:"Video: AI, ML & GenAI explained (IBM)"},
+ L5b:{url:"https://www.youtube.com/watch?v=LPZh9BOjkQs",fa:"ویدیو: LLM در چند دقیقه (3Blue1Brown)",en:"Video: LLMs explained briefly (3Blue1Brown)"},
+ L5c:{url:"https://www.youtube.com/watch?v=5HcDJ8e9NwY",fa:"ویدیو: کیفیتِ داده (IBM)",en:"Video: Data Quality (IBM)"},
+ L5d:{url:"https://www.youtube.com/watch?v=SvBR0OGT5VI",fa:"ویدیو: هوشمند و احمق (TED)",en:"Video: smart and shockingly stupid (TED)"},
+ L5e:{url:"https://www.youtube.com/watch?v=zYGDpG-pTho",fa:"ویدیو: RAG و فاین‌تیون و پرامپت (IBM)",en:"Video: RAG vs fine-tuning vs prompting (IBM)"},
+ L5f:{url:"https://www.youtube.com/watch?v=1c9iyoVIwDs",fa:"ویدیو: چهار روشِ پرامپت (IBM)",en:"Video: 4 methods of prompting (IBM)"},
+ L6a:{url:"https://www.youtube.com/watch?v=otghPRgJD3I",fa:"ویدیو: چرا پروژه‌های AI شکست می‌خورند",en:"Video: why most AI projects fail"},
+ L6b:{url:"https://www.youtube.com/watch?v=-x9bVcEmkUk",fa:"ویدیو: چرخهٔ عمرِ مدلِ AI (IBM)",en:"Video: the AI model life cycle (IBM)"},
+ L6c:{url:"https://www.youtube.com/watch?v=Vxw0nE1qfZc",fa:"ویدیو: دانشمندِ داده در برابرِ مهندسِ AI (IBM)",en:"Video: data scientist vs. AI engineer (IBM)"},
+ L6d:{url:"https://www.youtube.com/watch?v=trfUBIDeI1Y",fa:"ویدیو: ارزیابی با LLM-as-a-Judge (IBM)",en:"Video: LLM-as-a-Judge evals (IBM)"},
+ L6e:{url:"https://www.youtube.com/watch?v=UG_X_7g63rY",fa:"ویدیو: مبارزه با سوگیریِ الگوریتم (TED)",en:"Video: fighting algorithmic bias (TED)"},
+ L7a:{url:"https://www.youtube.com/watch?v=BpBFs4KRL9k",fa:"ویدیو: ChatGPT در مدیریتِ پروژه (Ricardo Vargas)",en:"Video: ChatGPT in project management (Ricardo Vargas)"},
+ L7b:{url:"https://www.youtube.com/watch?v=7CTV6q2vmUY",fa:"ویدیو: مقایسهٔ گواهینامه‌ها",en:"Video: comparing PM certifications"}
+};
+
+/* Exact YouTube tutorials for the toolbox cards (all verified) */
+const TOOL_VIDEOS={
+ "Trello":"https://www.youtube.com/watch?v=xky48zyL9iA",
+ "Asana":"https://www.youtube.com/watch?v=hcY-2Xux2oI",
+ "Jira":"https://www.youtube.com/watch?v=emidrJeUTaM",
+ "Notion":"https://www.youtube.com/watch?v=vdEGOwvxKBo",
+ "ClickUp":"https://www.youtube.com/watch?v=JmcVjP8m02k",
+ "monday.com":"https://www.youtube.com/watch?v=UMZeynogqqc",
+ "Linear":"https://www.youtube.com/watch?v=9Q5BoiIFBiY",
+ "Miro":"https://www.youtube.com/watch?v=mNNPchRnDp8",
+ "Smartsheet":"https://www.youtube.com/watch?v=pypwHj7vSpU",
+ "Slack":"https://www.youtube.com/watch?v=FTuOS8E1LZk",
+ "Otter.ai":"https://www.youtube.com/watch?v=r4XRaWrb4VI",
+ "Fireflies.ai":"https://www.youtube.com/watch?v=uZuFXgNfZmI",
+ "ChatGPT":"https://www.youtube.com/watch?v=poM2n8fBcag",
+ "Claude":"https://www.youtube.com/watch?v=0vZ_UVLhSQQ"
+};
+
+const trLevel = l => (lang==="en" && EN_LEVELS[l.id]) ? EN_LEVELS[l.id] : {name:l.name,star:l.star,intro:l.intro};
+const trItem  = i => (lang==="en" && EN_ITEMS[i.id]) ? EN_ITEMS[i.id] : i;
+const trPrompt= i => (lang==="en" && EN_ITEMS[i.id] && EN_ITEMS[i.id].prompt) ? EN_ITEMS[i.id].prompt : i.prompt;
+const trCaseGroup = g => (lang==="en" && CASE_GROUP_EN[g.id]) ? CASE_GROUP_EN[g.id] : g;
+const trCase  = c => (lang==="en" && CASE_EN[c.id]) ? CASE_EN[c.id] : c;
+const trBookGroup = g => (lang==="en" && BOOK_GROUP_EN[g.id]) ? BOOK_GROUP_EN[g.id] : g;
+const trBookSum = b => (lang==="en" && BOOK_EN[b.id]) ? BOOK_EN[b.id].sum : b.sum;
+/* ==================== /i18n ==================== */
+
+const ITEM_BY_ID={};
+LEVELS.forEach(l=>l.items.forEach(i=>{ ITEM_BY_ID[i.id]=i; }));
+
+const KEY_PROG="pm-roadmap-progress";
+const KEY_THEME="pm-roadmap-theme";
+let done={}, memOnly=false;
+const openState={CSF:true,CSS:true,BKPM:true,BKAI:true};
+
+const SECTIONS=[
+  {id:"roadmap", panel:"panel-roadmap"},
+  {id:"cases", panel:"panel-cases"},
+  {id:"books", panel:"panel-books"},
+  {id:"tools", panel:"panel-tools"}
+];
+let activeSection="roadmap";
+
+/* theme */
+const themeBtn=document.getElementById("themeBtn");
+function applyTheme(t){ document.documentElement.setAttribute("data-theme",t); themeBtn.textContent = t==="dark" ? S("light") : S("dark"); }
+async function loadTheme(){
+  let t=null;
+  try{ const r=await window.storage.get(KEY_THEME); if(r&&r.value) t=r.value; }catch(e){}
+  if(!t) t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";
+  applyTheme(t);
+}
+themeBtn.addEventListener("click",()=>{
+  const cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  applyTheme(cur);
+  try{ window.storage.set(KEY_THEME,cur); }catch(e){}
+});
+
+/* language (English <-> Persian) */
+const langBtn=document.getElementById("langBtn");
+async function loadLang(){
+  try{ const r=await window.storage.get(KEY_LANG); if(r&&(r.value==="fa"||r.value==="en")) lang=r.value; }catch(e){}
+}
+langBtn.addEventListener("click",()=>{
+  lang = lang==="fa" ? "en" : "fa";
+  try{ window.storage.set(KEY_LANG,lang); }catch(e){}
+  applyLang();
+});
+function applyLang(){
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.setAttribute("dir",lang==="fa"?"rtl":"ltr");
+  document.title=S("docTitle");
+  langBtn.textContent = lang==="fa" ? "English" : "فارسی";
+  document.getElementById("eyebrow").textContent=S("eyebrow");
+  document.getElementById("pageTitle").innerHTML=S("pageTitle");
+  document.getElementById("pageSub").textContent=S("pageSub");
+  document.getElementById("kpiLbl").textContent=S("kpiLbl");
+  document.getElementById("statLblH").textContent=S("statH");
+  document.getElementById("statLblM").textContent=S("statM");
+  document.getElementById("statLblI").textContent=S("statI");
+  ["hOf","mOf","iOf"].forEach(id=>document.getElementById(id).textContent=S("of"));
+  document.getElementById("hUnit").textContent=S("hUnit");
+  document.getElementById("mUnit").textContent=S("mUnit");
+  document.getElementById("iUnit").textContent=S("iUnit");
+  document.getElementById("casesHeadTxt").textContent=S("casesHead");
+  document.getElementById("casesSub").textContent=S("casesSub");
+  document.getElementById("booksHeadTxt").textContent=S("booksHead");
+  document.getElementById("booksSub").textContent=S("booksSub");
+  document.getElementById("toolsHeadTxt").textContent=S("toolsHead");
+  document.getElementById("toolsSub").textContent=S("toolsSub");
+  document.getElementById("footNote").textContent=S("footNote");
+  document.getElementById("resetBtn").textContent=S("reset");
+  applyTheme(document.documentElement.getAttribute("data-theme")||"light");
+  renderTools();
+  renderSectionTabs();
+  applySectionVisibility();
+  render();
+}
+
+/* progress */
+async function loadProgress(){
+  try{ const r=await window.storage.get(KEY_PROG); if(r&&r.value) done=JSON.parse(r.value)||{}; }
+  catch(e){ if(!window.storage) memOnly=true; }
+}
+async function saveProgress(){
+  try{ await window.storage.set(KEY_PROG,JSON.stringify(done)); flashSaved(S("saved")); }
+  catch(e){ memOnly=true; flashSaved(S("sessionOnly")); }
+}
+let savedTimer;
+function flashSaved(t){ const el=document.getElementById("savedNote"); el.innerHTML="<b>•</b> "+t; clearTimeout(savedTimer); savedTimer=setTimeout(()=>el.textContent="",1600); }
+
+const fmt = n => (Math.round(n*10)/10).toFixed(1).replace(/\.0$/,"");
+const lvMin = l => l.items.reduce((s,i)=>s+i.min,0);
+const lvDoneMin = l => l.items.reduce((s,i)=>s+(done[i.id]?i.min:0),0);
+const lvComplete = l => l.items.every(i=>done[i.id]);
+
+function render(){ renderLevels(); renderCases(); renderBooks(); renderSummary(); }
+
+function renderSectionTabs(){
+  const nav=document.getElementById("sectionTabs");
+  nav.innerHTML=SECTIONS.map(s=>`<button class="section-tab" id="stab-${s.id}" role="tab" data-section="${s.id}" aria-selected="${activeSection===s.id}" aria-controls="${s.panel}">${STR[lang].sections[s.id]}</button>`).join("");
+  nav.querySelectorAll("[data-section]").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.section)));
+}
+
+function applySectionVisibility(){
+  SECTIONS.forEach(s=>{ const p=document.getElementById(s.panel); if(p) p.hidden=(s.id!==activeSection); });
+  document.querySelectorAll("#sectionTabs .section-tab").forEach(b=>b.setAttribute("aria-selected", String(b.dataset.section===activeSection)));
+}
+
+function showSection(id){
+  activeSection=id;
+  applySectionVisibility();
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({top:0, behavior: reduce ? "auto" : "smooth"});
+}
+
+function resourceBtns(res){
+  return (res||[]).map(r=>{
+    const label = lang==="en" ? (RES_EN[r.label]||r.label) : r.label;
+    const cls = (/youtube\.com|youtu\.be/.test(r.url) || /یوتیوب|ویدیو/.test(r.label)) ? 'vid' : '';
+    return `<a class="btn ${cls}" href="${r.url}" target="_blank" rel="noopener">${label} ↗</a>`;
+  }).join("");
+}
+
+const checkSvg='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const chevSvg='<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+function renderLevels(){
+  const root=document.getElementById("levels");
+  root.innerHTML=LEVELS.map(l=>{
+    const total=lvMin(l), dmin=lvDoneMin(l), pct=total?Math.round(dmin/total*100):0;
+    const comp=lvComplete(l), open=openState[l.id], dItems=l.items.filter(i=>done[i.id]).length;
+    const LV=trLevel(l);
+    const items=l.items.map(i=>{
+      const d=!!done[i.id];
+      const it=trItem(i);
+      const promptBox = i.kind==="ai" ? `<div class="prompt-box">${esc(trPrompt(i))}</div>` : "";
+      const copyBtn = i.kind==="ai" ? `<button class="btn copy" data-copy="${i.id}">${S("copyPrompt")}</button>` : "";
+      const res=(i.resources||[]).concat(VIDEOS[i.id]?[{label:VIDEOS[i.id][lang==="en"?"en":"fa"],url:VIDEOS[i.id].url}]:[]);
+      return `<div class="item ${d?'done':''}">
+        <button class="check" data-toggle="${i.id}" role="checkbox" aria-checked="${d}" aria-label="${it.t}">${checkSvg}</button>
+        <div class="it-main">
+          <div class="it-title">${it.t}</div>
+          <div class="it-desc">${it.desc}</div>
+          ${promptBox}
+          <div class="it-actions">
+            <span class="chip ${i.kind}">${S("kind")[i.kind]}</span>
+            <span class="chip num">${locNum(i.min)} ${S("minutes")}</span>
+            ${resourceBtns(res)}
+            ${copyBtn}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+    return `<div class="level ${comp?'complete':''}">
+      <div class="rail">
+        <div class="node" style="--p:${pct}"><span class="lv num">${comp?'✓':locNum(l.num)}</span></div>
+        <div class="node-pct num">${locNum(pct)}${S("pctChar")}</div>
+        <div class="line"></div>
+      </div>
+      <section class="lcard ${open?'open':''}">
+        <button class="l-head" aria-expanded="${!!open}" data-head="${l.id}">
+          <span class="l-titles">
+            <span class="l-name">${LV.name} ${LV.star?`<span class="l-star">★ ${LV.star}</span>`:''}</span>
+            <span class="l-meta"><span class="num">${locNum(fmt(total/60))} ${S("hoursShort")}</span><span class="num">${S("itemsOf")(locNum(dItems),locNum(l.items.length))}</span></span>
+          </span>
+          <span class="l-bar"><i style="width:${pct}%"></i></span>
+          ${chevSvg}
+        </button>
+        <div class="l-body">
+          <div class="l-intro">${LV.intro}</div>
+          ${items}
+        </div>
+      </section>
+    </div>`;
+  }).join("");
+
+  root.querySelectorAll("[data-head]").forEach(h=>h.addEventListener("click",()=>{openState[h.dataset.head]=!openState[h.dataset.head]; renderLevels();}));
+  root.querySelectorAll("[data-toggle]").forEach(c=>c.addEventListener("click",()=>{const id=c.dataset.toggle; if(done[id])delete done[id]; else done[id]=true; saveProgress(); render();}));
+  root.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>{
+    const item=ITEM_BY_ID[b.dataset.copy];
+    const txt=item?(trPrompt(item)||""):"";
+    navigator.clipboard.writeText(txt).then(()=>{ b.textContent=S("copied"); setTimeout(()=>b.textContent=S("copyPrompt"),1500); }).catch(()=>{ b.textContent=S("copyFail"); setTimeout(()=>b.textContent=S("copyPrompt"),1500); });
+  }));
+}
+
+const tagChipCls = t => t==="شکست" ? "ai" : t==="موفقیت" ? "project" : "practice";
+
+function renderCases(){
+  const root=document.getElementById("cases");
+  root.innerHTML=CASE_GROUPS.map(g=>{
+    const total=g.cases.length, dn=g.cases.filter(c=>done[c.id]).length, pct=total?Math.round(dn/total*100):0;
+    const open=openState[g.id];
+    const G=trCaseGroup(g);
+    const rows=g.cases.map(c=>{
+      const dd=!!done[c.id];
+      const C=trCase(c);
+      const tagTxt=STR[lang].tags[c.tag]||c.tag;
+      return `<div class="item ${dd?'done':''}">
+        <button class="check" data-toggle2="${c.id}" role="checkbox" aria-checked="${dd}" aria-label="${C.t}">${checkSvg}</button>
+        <div class="it-main">
+          <div class="it-title">${C.t}</div>
+          <div class="it-desc">${C.desc}</div>
+          <div class="it-desc"><b>${S("lesson")}</b> ${C.lesson}</div>
+          <div class="it-actions">
+            <span class="chip ${tagChipCls(c.tag)}">${tagTxt}</span>
+            ${resourceBtns(c.links)}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+    return `<section class="lcard ${open?'open':''}">
+      <button class="l-head" aria-expanded="${!!open}" data-head2="${g.id}">
+        <span class="l-titles">
+          <span class="l-name">${G.name}</span>
+          <span class="l-meta"><span class="step-eyebrow">${g.eyebrow}</span><span class="num">${S("casesOf")(locNum(dn),locNum(total))}</span></span>
+        </span>
+        <span class="l-bar"><i style="width:${pct}%"></i></span>
+        ${chevSvg}
+      </button>
+      <div class="l-body">
+        <div class="l-intro">${G.intro}</div>
+        ${rows}
+      </div>
+    </section>`;
+  }).join("");
+
+  root.querySelectorAll("[data-head2]").forEach(h=>h.addEventListener("click",()=>{openState[h.dataset.head2]=!openState[h.dataset.head2]; renderCases();}));
+  root.querySelectorAll("[data-toggle2]").forEach(c=>c.addEventListener("click",()=>{const id=c.dataset.toggle2; if(done[id])delete done[id]; else done[id]=true; saveProgress(); renderCases();}));
+
+  const all=CASE_GROUPS.flatMap(g=>g.cases);
+  const d=all.filter(c=>done[c.id]).length, t=all.length;
+  const be=document.getElementById("casePct"); be.textContent=locNum(d); be.classList.toggle("zero",d===0);
+  document.getElementById("caseLbl").textContent=S("caseLbl")(locNum(t));
+  document.getElementById("caseFill").style.width=(t?d/t*100:0)+"%";
+}
+
+function renderBooks(){
+  const root=document.getElementById("books");
+  root.innerHTML=BOOK_GROUPS.map(g=>{
+    const total=g.books.length, dn=g.books.filter(b=>done[b.id]).length, pct=total?Math.round(dn/total*100):0;
+    const open=openState[g.id];
+    const G=trBookGroup(g);
+    const rows=g.books.map(b=>{
+      const dd=!!done[b.id];
+      return `<div class="item ${dd?'done':''}">
+        <button class="check" data-toggle3="${b.id}" role="checkbox" aria-checked="${dd}" aria-label="${b.t}">${checkSvg}</button>
+        <div class="it-main">
+          <div class="it-title">${b.t}</div>
+          <div class="sum-box">${trBookSum(b)}</div>
+          <div class="it-actions">
+            <span class="chip concept">${S("author")}: ${b.a}</span>
+            ${resourceBtns(b.links)}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+    return `<section class="lcard ${open?'open':''}">
+      <button class="l-head" aria-expanded="${!!open}" data-head3="${g.id}">
+        <span class="l-titles">
+          <span class="l-name">${G.name}</span>
+          <span class="l-meta"><span class="step-eyebrow">${g.eyebrow}</span><span class="num">${S("booksOf")(locNum(dn),locNum(total))}</span></span>
+        </span>
+        <span class="l-bar"><i style="width:${pct}%"></i></span>
+        ${chevSvg}
+      </button>
+      <div class="l-body">
+        <div class="l-intro">${G.intro}</div>
+        ${rows}
+      </div>
+    </section>`;
+  }).join("");
+
+  root.querySelectorAll("[data-head3]").forEach(h=>h.addEventListener("click",()=>{openState[h.dataset.head3]=!openState[h.dataset.head3]; renderBooks();}));
+  root.querySelectorAll("[data-toggle3]").forEach(c=>c.addEventListener("click",()=>{const id=c.dataset.toggle3; if(done[id])delete done[id]; else done[id]=true; saveProgress(); renderBooks();}));
+
+  const all=BOOK_GROUPS.flatMap(g=>g.books);
+  const d=all.filter(b=>done[b.id]).length, t=all.length;
+  const be=document.getElementById("bookPct"); be.textContent=locNum(d); be.classList.toggle("zero",d===0);
+  document.getElementById("bookLbl").textContent=S("bookLbl")(locNum(t));
+  document.getElementById("bookFill").style.width=(t?d/t*100:0)+"%";
+}
+
+function renderTools(){
+  document.getElementById("tools").innerHTML=TOOLS.map(t=>{
+    const cat = lang==="en" ? (CAT_EN[t.cat]||t.cat) : t.cat;
+    const desc = lang==="en" ? (TOOL_EN[t.name]||t.desc) : t.desc;
+    const vurl = TOOL_VIDEOS[t.name]||t.site;
+    const isYT = /youtube\.com|youtu\.be/.test(vurl);
+    return `
+    <div class="tool">
+      <div class="tool-top"><span class="tool-name">${t.name}</span><span class="tcat">${cat}</span></div>
+      <div class="tool-desc">${desc}</div>
+      <div class="tool-actions">
+        <a class="btn" href="${t.site}" target="_blank" rel="noopener">${S("siteBtn")} ↗</a>
+        <a class="btn vid" href="${vurl}" target="_blank" rel="noopener">${isYT?S("videoBtn"):S("docsBtn")} ↗</a>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderSummary(){
+  const all=LEVELS.flatMap(l=>l.items);
+  const totalMin=all.reduce((s,i)=>s+i.min,0);
+  const doneMin=all.reduce((s,i)=>s+(done[i.id]?i.min:0),0);
+  const doneItems=all.filter(i=>done[i.id]).length;
+  const compLv=LEVELS.filter(lvComplete).length;
+  const pct=totalMin?Math.round(doneMin/totalMin*100):0;
+  const pe=document.getElementById("kpiPct");
+  pe.textContent=locNum(pct)+S("pctChar"); pe.classList.toggle("zero",pct===0);
+  document.getElementById("heroFill").style.width=pct+"%";
+  document.getElementById("hDone").textContent=locNum(fmt(doneMin/60));
+  document.getElementById("hTot").textContent=locNum(fmt(totalMin/60));
+  document.getElementById("hBar").style.width=(totalMin?doneMin/totalMin*100:0)+"%";
+  document.getElementById("mDone").textContent=locNum(compLv);
+  document.getElementById("mTot").textContent=locNum(LEVELS.length);
+  document.getElementById("mBar").style.width=(compLv/LEVELS.length*100)+"%";
+  document.getElementById("iDone").textContent=locNum(doneItems);
+  document.getElementById("iTot").textContent=locNum(all.length);
+  document.getElementById("iBar").style.width=(doneItems/all.length*100)+"%";
+}
+
+document.getElementById("resetBtn").addEventListener("click",async()=>{
+  if(!confirm(S("confirmReset"))) return;
+  done={}; await saveProgress(); render();
+});
+
+(async function init(){
+  await loadTheme();
+  await loadLang();
+  await loadProgress();
+  applyLang();
+  if(memOnly) flashSaved(S("sessionOnly"));
+})();
+</script>
+</body>
+</html>
