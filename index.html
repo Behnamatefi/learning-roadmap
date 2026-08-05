@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>نقشه‌های راهِ یادگیری</title>
+<script>try{document.documentElement.setAttribute('data-theme',(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F0EC; --card:#FAF9F7; --card2:#E4E1DB; --ink:#111110; --line:#D8D5CE; --line-2:#E5E2DC; --line-strong:#B9B5AC;
+    --muted:#4A4843; --muted-2:#7C786F;
+    --violet:#26241F; --coral:#F0703E; --green:#8A867D; --amber:#57534E;
+    --violet-soft:rgba(38,36,31,.07); --violet-line:rgba(38,36,31,.24);
+    --green-soft:rgba(138,134,125,.10); --green-line:rgba(138,134,125,.30);
+    --coral-soft:rgba(240,112,62,.12); --coral-line:rgba(240,112,62,.34);
+    --amber-soft:rgba(87,83,78,.08); --amber-line:rgba(87,83,78,.26);
+    --sig:#F03E10; --sig-press:#D63407; --sig-soft:#F0703E; --sig-ink:#111110;
+    --shadow:0 0 0 0 transparent;
+    --display:'Vazirmatn',system-ui,sans-serif; --body:'Vazirmatn',system-ui,sans-serif; --mono:'JetBrains Mono','Vazirmatn',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --r:12px;
+  }
+  html[data-theme="dark"]{
+    --paper:#0A0A0A; --card:#161514; --card2:#211F1D; --ink:#F4F3F0; --line:#262523; --line-2:#1C1B1A; --line-strong:#3A3835;
+    --muted:#A8A49C; --muted-2:#6E6A63;
+    --violet:#E8E6E1; --coral:#FF6B3D; --green:#A19C93; --amber:#C9C5BD;
+    --violet-soft:rgba(232,230,225,.08); --violet-line:rgba(232,230,225,.26);
+    --green-soft:rgba(161,156,147,.14); --green-line:rgba(161,156,147,.32);
+    --coral-soft:rgba(255,107,61,.14); --coral-line:rgba(255,107,61,.36);
+    --amber-soft:rgba(201,197,189,.10); --amber-line:rgba(201,197,189,.28);
+    --sig:#FF4514; --sig-press:#E63D0F; --sig-soft:#FF6B3D; --sig-ink:#0A0A0A;
+    --shadow:0 0 0 0 transparent;
+  }
+  html[lang="en"]{
+    --display:'Space Grotesk',-apple-system,system-ui,sans-serif;
+    --body:'Space Grotesk',-apple-system,system-ui,sans-serif;
+  }
+  /* The mono annotation layer carries its "annotation" feeling through tracking and
+     uppercase in English only: Persian joins its letters, so tracking breaks the
+     script, and it has no uppercase. In fa the same weight/size/hairline carries it. */
+  html[lang="en"] .eyebrow{letter-spacing:.14em; text-transform:uppercase}
+  html[lang="en"] .rt-idx{letter-spacing:.1em}
+  html[lang="en"] .rt-stat{letter-spacing:.01em}
+  html[lang="en"] .title{letter-spacing:-.02em}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper);
+    color:var(--ink); font-family:var(--body); line-height:1.78;
+    -webkit-font-smoothing:antialiased; min-height:100vh; transition:background .3s, color .3s;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:26px 20px 80px}
+  .num{font-feature-settings:"tnum" 1}
+  :focus-visible{outline:2px solid var(--sig); outline-offset:2px}
+
+  /* Header */
+  header{position:relative; z-index:0}
+  .cursor-fx{position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:0; display:block; width:100%; height:100%; border-radius:8px}
+  .topbar{display:flex; justify-content:space-between; align-items:center; gap:14px}
+  .eyebrow{font-family:var(--mono); font-size:12px; color:var(--violet); font-weight:700; direction:ltr; display:inline-flex; gap:8px; align-items:center}
+  .eyebrow::before{content:""; width:6px; height:6px; background:var(--sig)}
+  .theme-btn{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line-strong); border-radius:999px; padding:7px 14px; transition:.16s}
+  .theme-btn:hover{color:var(--ink); border-color:var(--violet-line)}
+  .topbar-actions{display:flex; gap:8px; align-items:center}
+  .title{font-family:var(--display); font-weight:800; font-size:33px; line-height:1.2; margin:14px 0 6px}
+  .sub{color:var(--muted); font-size:15px; max-width:60ch; margin:0}
+
+  /* Routes */
+  .routes{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:26px}
+  .route{
+    display:flex; flex-direction:column; min-width:0; text-decoration:none; color:inherit;
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    overflow:hidden; box-shadow:var(--shadow); transition:border-color .16s;
+  }
+  .route:focus-visible{outline-offset:3px}
+  .rt-head{display:flex; align-items:center; gap:11px; padding:14px 16px; min-height:74px; background:var(--card2); border-bottom:1px solid var(--line)}
+  .rt-idx{font-family:var(--mono); font-weight:700; font-size:12.5px; color:var(--muted-2); direction:ltr; flex:0 0 auto}
+  .rt-title{font-family:var(--display); font-weight:800; font-size:17px; line-height:1.35; margin:0; flex:1 1 auto; min-width:0}
+  .rt-go{flex:0 0 auto; color:var(--muted-2); display:inline-flex; transition:transform .18s cubic-bezier(.2,.7,.2,1), color .16s; --dir:1}
+  html[dir="rtl"] .rt-go{--dir:-1}
+  .rt-go svg{display:block; transform:scaleX(var(--dir))}
+  .rt-body{padding:16px; display:flex; flex-direction:column; gap:14px; flex:1 1 auto}
+  .rt-dek{color:var(--muted); font-size:13px; line-height:1.75; margin:0; flex:1 1 auto}
+  .rt-stats{position:relative; display:flex; flex-wrap:wrap; align-items:center; row-gap:5px; border-top:1px solid var(--line-2); padding-top:12px}
+  /* masks the leading hairline of any item that wraps onto a new line */
+  .rt-stats::before{content:""; position:absolute; inset-block:0; inset-inline-start:0; width:1px; background:var(--card)}
+  .rt-stat{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--muted-2); line-height:1.5; padding-inline:9px; border-inline-start:1px solid var(--line)}
+  .rt-stat:first-child{padding-inline-start:0; border-inline-start:0}
+  .rt-stat:last-child{padding-inline-end:0}
+  .rt-stat b{font-weight:700; color:var(--ink)}
+
+  @media (hover:hover) and (pointer:fine){
+    .route:hover{border-color:var(--line-strong)}
+    /* the chevron is the one "live" mark on this page, and only under the cursor —
+       one orange moment at a time, never two competing */
+    .route:hover .rt-go{transform:translateX(calc(4px * var(--dir))); color:var(--sig)}
+  }
+
+  .footer{margin-top:34px; border-top:1px solid var(--line); padding-top:16px}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap}
+  .note{color:var(--muted); font-size:12px; max-width:54ch}
+  .footer .note{margin:0}
+
+  @media (max-width:640px){
+    .title{font-size:26px}
+    .routes{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <canvas class="cursor-fx" id="cursorFx" aria-hidden="true"></canvas>
+    <div class="topbar">
+      <div class="eyebrow" id="eyebrow">Learning Roadmaps · نقشه‌های راهِ یادگیری</div>
+      <div class="topbar-actions">
+        <button class="theme-btn" id="langBtn" aria-label="Switch language">English</button>
+        <button class="theme-btn" id="themeBtn">حالت تیره</button>
+      </div>
+    </div>
+    <h1 class="title" id="pageTitle">نقشه‌های راهِ یادگیری</h1>
+    <p class="sub" id="pageSub">دو نقشهٔ راهِ مستقل و دوزبانه — یکی را انتخاب کن.</p>
+  </header>
+
+  <main class="routes" id="routes" aria-label="نقشه‌های راه"></main>
+
+  <div class="footer">
+    <div class="foot-row">
+      <p class="note" id="footNote">زبان و حالتِ رنگ خودکار ذخیره می‌شوند.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const FA="۰۱۲۳۴۵۶۷۸۹";
+const toFa = s => String(s).replace(/[0-9]/g,d=>FA[+d]).replace(/\./g,"٫");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* storage shim: use localStorage when the artifact storage API is absent */
+if(!window.storage){
+  window.storage={
+    async get(k){ try{ return {value:localStorage.getItem(k)}; }catch(e){ return {value:null}; } },
+    async set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  };
+}
+
+/* ASCII cursor-trail: hero/header flourish, theme-aware, hover+fine-pointer only, off under reduced motion */
+(function(){
+  const canvas=document.getElementById("cursorFx");
+  if(!canvas) return;
+  const fine=window.matchMedia && matchMedia("(hover:hover) and (pointer:fine)").matches;
+  const reduce=window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(!fine || reduce) return;
+  const ctx=canvas.getContext("2d");
+  if(!ctx) return;
+
+  const POOL="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|:;<>,.?/~";
+  const cell=16, radius=64, density=15, hold=15;
+  let colors={box:"#FF4514", text:"#0A0A0A"};
+  function refreshCursorFxColors(){
+    const cs=getComputedStyle(document.documentElement);
+    colors={ box:(cs.getPropertyValue("--sig")||colors.box).trim(), text:(cs.getPropertyValue("--sig-ink")||colors.text).trim() };
+  }
+  window.__refreshCursorFxColors=refreshCursorFxColors;
+
+  let w=1,h=1,cols=1,rows=1,grid=[],activeCells=new Set();
+  function rebuild(){
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    w=Math.max(1,canvas.clientWidth); h=Math.max(1,canvas.clientHeight);
+    canvas.width=Math.floor(w*dpr); canvas.height=Math.floor(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    cols=Math.max(1,Math.ceil(w/cell)+1); rows=Math.max(1,Math.ceil(h/cell)+1);
+    grid=new Array(cols*rows);
+    for(let i=0;i<grid.length;i++) grid[i]={char:" ",activeAt:0,delay:.05,duration:.25,hidden:false};
+    activeCells=new Set();
+  }
+  rebuild();
+  new ResizeObserver(rebuild).observe(canvas);
+
+  let mouseX=-1e4, mouseY=-1e4, trailX=-1e4, trailY=-1e4;
+  const prevCursor=document.documentElement.style.cursor;
+  let cursorHidden=false;
+  function hideNativeCursor(hide){
+    if(hide===cursorHidden) return;
+    cursorHidden=hide;
+    document.documentElement.style.cursor = hide ? "none" : prevCursor;
+  }
+  function onMove(e){
+    const rect=canvas.getBoundingClientRect();
+    const inside = e.clientX>=rect.left && e.clientX<=rect.right && e.clientY>=rect.top && e.clientY<=rect.bottom;
+    if(inside){
+      const sx=rect.width>0?canvas.clientWidth/rect.width:1, sy=rect.height>0?canvas.clientHeight/rect.height:1;
+      mouseX=(e.clientX-rect.left)*sx; mouseY=(e.clientY-rect.top)*sy;
+      canvas.style.opacity="1";
+    } else { mouseX=-1e4; mouseY=-1e4; }
+    hideNativeCursor(inside);
+  }
+  window.addEventListener("pointermove",onMove,{passive:true});
+  document.addEventListener("pointerleave",()=>{ mouseX=-1e4; mouseY=-1e4; hideNativeCursor(false); });
+
+  let visible=true;
+  new IntersectionObserver(es=>{ visible=(es[0]?es[0].isIntersecting:true) && !document.hidden; },{threshold:0}).observe(canvas);
+  document.addEventListener("visibilitychange",()=>{ visible=!document.hidden; });
+
+  let last=performance.now();
+  function frame(now){
+    requestAnimationFrame(frame);
+    if(!visible){ last=now; return; }
+    const dt=Math.min(.05,Math.max(0,(now-last)/1000)); last=now;
+    const t=now/1000;
+    let moving=false;
+    if(mouseX<=-1e4){ trailX=-1e4; trailY=-1e4; }
+    else if(trailX<=-1e4){ trailX=mouseX; trailY=mouseY; }
+    else{
+      const dx=mouseX-trailX, dy=mouseY-trailY;
+      if(Math.abs(dx)>.1 || Math.abs(dy)>.1){ const ease=1-Math.exp(-dt/.004); trailX+=dx*ease; trailY+=dy*ease; moving=true; }
+      else{ trailX=mouseX; trailY=mouseY; }
+    }
+    if(moving){
+      const r=Math.max(1,radius), rSq=r*r, impact=density/8, holdScale=Math.max(.1,hold/10);
+      const startCol=Math.max(0,Math.floor((trailX-r)/cell)), endCol=Math.min(cols-1,Math.ceil((trailX+r)/cell));
+      const startRow=Math.max(0,Math.floor((trailY-r)/cell)), endRow=Math.min(rows-1,Math.ceil((trailY+r)/cell));
+      for(let c=startCol;c<=endCol;c++){
+        for(let rw=startRow;rw<=endRow;rw++){
+          const cx=c*cell+cell/2, cy=rw*cell+cell/2, dx=trailX-cx, dy=trailY-cy, distSq=dx*dx+dy*dy;
+          if(distSq>=rSq) continue;
+          const falloff=Math.pow(1-Math.sqrt(distSq)/r,1.5);
+          if(Math.random()>=falloff*impact) continue;
+          const idx=c*rows+rw, cd=grid[idx];
+          if(!cd) continue;
+          if(cd.activeAt===0 || t-cd.activeAt>.2){
+            cd.delay=(.03+Math.random()*.05)*holdScale; cd.duration=(.1+Math.random()*.15)*holdScale; cd.hidden=Math.random()<.04;
+          }
+          cd.activeAt=t;
+          if(cd.char===" " || Math.random()<.15) cd.char=POOL[Math.floor(Math.random()*POOL.length)];
+          activeCells.add(idx);
+        }
+      }
+    }
+    ctx.clearRect(0,0,w,h);
+    ctx.font=`600 ${cell-6}px 'JetBrains Mono',monospace`;
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    const scramble=1-Math.exp(-7.2*dt);
+    for(const idx of activeCells){
+      const cd=grid[idx];
+      if(!cd || cd.activeAt===0){ activeCells.delete(idx); continue; }
+      const elapsed=t-cd.activeAt;
+      if(elapsed>=cd.delay+cd.duration){ cd.char=" "; cd.activeAt=0; cd.hidden=false; activeCells.delete(idx); continue; }
+      if(cd.hidden) continue;
+      const c=Math.floor(idx/rows), rw=idx%rows;
+      if(elapsed>=cd.delay && Math.random()<scramble) cd.char=POOL[Math.floor(Math.random()*POOL.length)];
+      const x=c*cell, y=rw*cell;
+      ctx.fillStyle=colors.box; ctx.fillRect(x,y,cell,cell);
+      ctx.fillStyle=colors.text; ctx.fillText(cd.char,x+cell/2,y+cell/2);
+    }
+  }
+  refreshCursorFxColors();
+  requestAnimationFrame(frame);
+})();
+
+/* ==================== i18n ==================== */
+const KEY_THEME="router-theme";
+const KEY_LANG="router-lang";
+let lang="fa";
+const locNum = s => lang==="fa" ? toFa(s) : String(s);
+
+const STR={
+ fa:{
+  docTitle:"نقشه‌های راهِ یادگیری",
+  eyebrow:"Learning Roadmaps · نقشه‌های راهِ یادگیری",
+  pageTitle:"نقشه‌های راهِ یادگیری",
+  pageSub:"دو نقشهٔ راهِ مستقل و دوزبانه — یکی را انتخاب کن.",
+  dark:"حالت تیره", light:"حالت روشن",
+  routesLabel:"نقشه‌های راه",
+  units:{levels:"سطح", tasks:"کار", cases:"کیس‌استادی", books:"کتاب", tools:"ابزار", ui:"تمرینِ بازسازیِ UI"},
+  footNote:"زبان و حالتِ رنگ خودکار ذخیره می‌شوند."
+ },
+ en:{
+  docTitle:"Learning Roadmaps",
+  eyebrow:"Learning Roadmaps · Index",
+  pageTitle:"Learning Roadmaps",
+  pageSub:"Two self-contained, bilingual roadmaps — pick one.",
+  dark:"Dark mode", light:"Light mode",
+  routesLabel:"Roadmaps",
+  units:{levels:"levels", tasks:"tasks", cases:"case studies", books:"books", tools:"tools", ui:"UI rebuild exercises"},
+  footNote:"Language and theme are saved automatically."
+ }
+};
+const S=k=>STR[lang][k];
+
+/* ==================== data ==================== */
+const ROUTES=[
+  {
+    id:"pm", idx:"01", href:"ai-pm-roadmap-tracker-v1.html",
+    t:"از صفر تا مدیرِ پروژه‌های AI",
+    dek:"یک مسیرِ سطح‌به‌سطح برای کسی که هیچ پیش‌زمینهٔ فنی، طراحی یا محصولی ندارد: اول مفاهیمِ پایهٔ مدیریتِ پروژه، بعد برنامه‌ریزی و اجرا، بعد اجایل و مهارت‌های انسانی، و در نهایت سوادِ AI و مدیریتِ پروژه‌های هوشِ مصنوعی.",
+    stats:[{n:8,u:"levels"},{n:54,u:"tasks"},{n:10,u:"cases"},{n:9,u:"books"},{n:14,u:"tools"}]
+  },
+  {
+    id:"design", idx:"02", href:"design-roadmap-tracker-v10.html",
+    t:"از صفر تا طراحِ محصولِ حرفه‌ای",
+    dek:"یک مسیرِ سطح‌به‌سطح برای کسی که تازه شروع می‌کند: اول «خوب فکر کردن»، بعد دیدن و ساختن، بعد Figma و تسلط بر UI، و در نهایت طراحیِ محصول در دنیای AI.",
+    stats:[{n:10,u:"levels"},{n:33,u:"ui"},{n:17,u:"tools"}]
+  }
+];
+
+const ROUTE_EN={
+  pm:{
+    t:"From zero to managing AI projects",
+    dek:"A level-by-level path for someone with no technical, design, or product background: first the basics of project management, then planning and execution, then Agile and people skills, and finally AI literacy and managing real AI projects."
+  },
+  design:{
+    t:"From zero to a professional product designer",
+    dek:"A level-by-level path for someone just starting out: first thinking well, then seeing and building, then Figma and UI mastery, and finally product design in the AI era."
+  }
+};
+const trRoute = r => (lang==="en" && ROUTE_EN[r.id]) ? ROUTE_EN[r.id] : r;
+/* ==================== /i18n ==================== */
+
+/* ==================== engine ==================== */
+const ARROW='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7"/></svg>';
+
+function renderRoutes(){
+  const host=document.getElementById("routes");
+  host.setAttribute("aria-label",S("routesLabel"));
+  host.innerHTML=ROUTES.map(r=>{
+    const tr=trRoute(r);
+    const stats=r.stats.map(s=>
+      `<span class="rt-stat"><b class="num">${esc(locNum(s.n))}</b> ${esc(S("units")[s.u])}</span>`
+    ).join("");
+    return `<a class="route" href="${esc(r.href)}" aria-labelledby="rt-t-${esc(r.id)}">
+      <div class="rt-head">
+        <span class="rt-idx num">${esc(locNum(r.idx))}</span>
+        <h2 class="rt-title" id="rt-t-${esc(r.id)}">${esc(tr.t)}</h2>
+        <span class="rt-go">${ARROW}</span>
+      </div>
+      <div class="rt-body">
+        <p class="rt-dek">${esc(tr.dek)}</p>
+        <div class="rt-stats">${stats}</div>
+      </div>
+    </a>`;
+  }).join("");
+}
+
+/* theme */
+const themeBtn=document.getElementById("themeBtn");
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  themeBtn.textContent = t==="dark" ? S("light") : S("dark");
+  if(window.__refreshCursorFxColors) window.__refreshCursorFxColors();
+}
+async function loadTheme(){
+  let t=null;
+  try{ const r=await window.storage.get(KEY_THEME); if(r&&r.value) t=r.value; }catch(e){}
+  if(!t) t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";
+  applyTheme(t);
+}
+themeBtn.addEventListener("click",()=>{
+  const cur=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
+  applyTheme(cur);
+  try{ window.storage.set(KEY_THEME,cur); }catch(e){}
+});
+
+/* language (English <-> Persian) */
+const langBtn=document.getElementById("langBtn");
+async function loadLang(){
+  try{ const r=await window.storage.get(KEY_LANG); if(r&&(r.value==="fa"||r.value==="en")) lang=r.value; }catch(e){}
+}
+langBtn.addEventListener("click",()=>{
+  lang = lang==="fa" ? "en" : "fa";
+  try{ window.storage.set(KEY_LANG,lang); }catch(e){}
+  applyLang();
+});
+function applyLang(){
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.setAttribute("dir",lang==="fa"?"rtl":"ltr");
+  document.title=S("docTitle");
+  langBtn.textContent = lang==="fa" ? "English" : "فارسی";
+  document.getElementById("eyebrow").textContent=S("eyebrow");
+  document.getElementById("pageTitle").textContent=S("pageTitle");
+  document.getElementById("pageSub").textContent=S("pageSub");
+  document.getElementById("footNote").textContent=S("footNote");
+  applyTheme(document.documentElement.getAttribute("data-theme")||"light");
+  renderRoutes();
+}
+
+(async function init(){
+  await loadTheme();
+  await loadLang();
+  applyLang();
+})();
+</script>
+</body>
+</html>

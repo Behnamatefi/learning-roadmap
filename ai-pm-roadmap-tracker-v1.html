@@ -20,7 +20,7 @@
     --sig:#F03E10; --sig-press:#D63407; --sig-soft:#F0703E; --sig-ink:#111110;
     --shadow:0 0 0 0 transparent;
     --node-track:#D8D5CE;
-    --display:'Vazirmatn',system-ui,sans-serif; --body:'Vazirmatn',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --display:'Vazirmatn',system-ui,sans-serif; --body:'Vazirmatn',system-ui,sans-serif; --mono:'JetBrains Mono','Vazirmatn',ui-monospace,SFMono-Regular,Menlo,monospace;
     --r:12px;
   }
   html[data-theme="dark"]{
@@ -39,6 +39,13 @@
     --display:'Space Grotesk',-apple-system,system-ui,sans-serif;
     --body:'Space Grotesk',-apple-system,system-ui,sans-serif;
   }
+  /* The mono annotation layer carries its "annotation" feeling through tracking and
+     uppercase in English only: Persian joins its letters, so tracking breaks the
+     script, and it has no uppercase. In fa the same weight/size/hairline carries it. */
+  html[lang="en"] .eyebrow{letter-spacing:.14em; text-transform:uppercase}
+  html[lang="en"] .stat-lbl{letter-spacing:.03em; text-transform:uppercase}
+  html[lang="en"] .step-eyebrow{letter-spacing:.1em; text-transform:uppercase}
+  html[lang="en"] .title{letter-spacing:-.02em}
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
@@ -54,12 +61,12 @@
   header{position:relative; z-index:0}
   .cursor-fx{position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:0; display:block; width:100%; height:100%; border-radius:8px}
   .topbar{display:flex; justify-content:space-between; align-items:center; gap:14px}
-  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; color:var(--violet); font-weight:700; text-transform:uppercase; direction:ltr; display:inline-flex; gap:8px; align-items:center}
+  .eyebrow{font-family:var(--mono); font-size:12px; color:var(--violet); font-weight:700; direction:ltr; display:inline-flex; gap:8px; align-items:center}
   .eyebrow::before{content:""; width:6px; height:6px; background:var(--sig)}
   .theme-btn{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line-strong); border-radius:999px; padding:7px 14px; transition:.16s}
   .theme-btn:hover{color:var(--ink); border-color:var(--violet-line)}
   .topbar-actions{display:flex; gap:8px; align-items:center}
-  .title{font-family:var(--display); font-weight:800; font-size:33px; line-height:1.2; margin:14px 0 6px; letter-spacing:-.01em}
+  .title{font-family:var(--display); font-weight:800; font-size:33px; line-height:1.2; margin:14px 0 6px}
   .title .pop{color:var(--violet)}
   .sub{color:var(--muted); font-size:15px; max-width:60ch; margin:0}
 
@@ -73,7 +80,7 @@
   .hero-bar i{display:block; height:100%; width:0; background:var(--sig); transition:width .55s cubic-bezier(.2,.7,.2,1)}
   .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px}
   .stat{background:var(--card2); border:1px solid var(--line); border-radius:10px; padding:14px 16px}
-  .stat-lbl{color:var(--muted); font-size:12.5px; font-weight:700; margin-bottom:6px; font-family:var(--mono); letter-spacing:.03em; text-transform:uppercase}
+  .stat-lbl{color:var(--muted); font-size:12.5px; font-weight:700; margin-bottom:6px; font-family:var(--mono)}
   .stat-val{font-size:14px; color:var(--muted)}
   .stat-val b{font-family:var(--mono); font-size:24px; font-weight:700; color:var(--ink); margin-inline-end:3px}
   .stat-val small{font-size:12px; color:var(--muted-2); margin-inline-start:4px}
@@ -150,7 +157,7 @@
 
   .footer{margin-top:34px}
   .foot-row{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap}
-  .note{color:var(--muted-2); font-size:12px; max-width:54ch}
+  .note{color:var(--muted); font-size:12px; max-width:54ch}
   .reset{appearance:none; cursor:pointer; font-family:var(--body); font-weight:700; font-size:12.5px; color:var(--muted); background:var(--card); border:1px solid var(--line-strong); border-radius:9px; padding:8px 14px; transition:.16s}
   .reset:hover{color:var(--coral); border-color:var(--coral-line)}
   .saved{font-size:11.5px; color:var(--muted-2)} .saved b{color:var(--green)}
@@ -160,7 +167,7 @@
   .lab-big{font-family:var(--mono); font-weight:700; font-size:34px; line-height:1; color:var(--sig)}
   .lab-big.zero{color:var(--ink)}
   .lab-lbl{color:var(--muted); font-size:12.5px; font-weight:600; margin-top:5px}
-  .step-eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; color:var(--muted-2); font-weight:700; direction:ltr; text-transform:uppercase}
+  .step-eyebrow{font-family:var(--mono); font-size:10.5px; color:var(--muted-2); font-weight:700; direction:ltr}
 
   /* Section controller */
   .panel[hidden]{display:none}
