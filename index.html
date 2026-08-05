@@ -74,7 +74,7 @@
   }
   .topbar-actions{display:flex; gap:8px; align-items:center}
   .title{font-family:var(--display); font-weight:800; font-size:80px; line-height:1.1; margin:48px 0 0; text-align:center}
-  .sub{color:var(--muted); font-size:18px; line-height:1.6; max-width:60ch; margin:20px auto 0; text-align:center}
+  .sub{color:var(--muted); font-size:23px; line-height:1.6; max-width:60ch; margin:20px auto 0; text-align:center; animation:rv-in .3s cubic-bezier(.215,.61,.355,1) both; animation-delay:var(--sub-delay,1040ms)}
 
   /* Focus-reveal: title blurs/scales in per Latin character on load or language
      switch (ported from a motion/react component to a CSS animation — no JS
@@ -85,10 +85,11 @@
     from{opacity:0; transform:scale(1.45); filter:blur(20px)}
     to{opacity:1; transform:scale(1); filter:blur(0)}
   }
-  .title .rv{display:inline-block; animation:rv-in .3s cubic-bezier(.215,.61,.355,1) both; animation-delay:calc(var(--i,0) * 35ms)}
+  .title .rv{display:inline-block; animation:rv-in .3s cubic-bezier(.215,.61,.355,1) both; animation-delay:calc(500ms + var(--i,0) * 35ms)}
   .title .rv-word{display:inline-block; white-space:nowrap}
   @media (prefers-reduced-motion:reduce){
     .title .rv{animation:none; opacity:1; transform:none; filter:none}
+    .sub{animation:none; opacity:1}
   }
 
   /* Routes */
@@ -357,6 +358,7 @@ function renderRoutes(){
 function renderTitle(){
   const el=document.getElementById("pageTitle");
   const txt=S("pageTitle");
+  let total=1;
   if(lang==="en"){
     let i=0;
     el.innerHTML=txt.split(/(\s+)/).map(tok=>{
@@ -364,9 +366,13 @@ function renderTitle(){
       const chars=tok.split("").map(c=>`<span class="rv" style="--i:${i++}">${esc(c)}</span>`).join("");
       return `<span class="rv-word">${chars}</span>`;
     }).join("");
+    total=i;
   } else {
     el.innerHTML=`<span class="rv">${esc(txt)}</span>`;
   }
+  /* .sub's reveal starts 240ms after the title's last character finishes:
+     500ms base delay + (total-1)*35ms stagger + 300ms duration + 240ms. */
+  document.documentElement.style.setProperty("--sub-delay",(800+(total-1)*35+240)+"ms");
 }
 
 /* theme */
