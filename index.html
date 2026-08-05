@@ -68,7 +68,9 @@
      sunken fill, hairline (no border-color change), sharp corners, mono micro
      label, tertiary→primary on hover, a press-scale confirm — no background
      transition, the fill snaps rather than fades. */
-  .theme-btn{appearance:none; cursor:pointer; font-family:var(--mono); font-weight:700; font-size:12px; color:var(--muted-2); background:var(--card2); border:1px solid var(--line); border-radius:0; padding:8px 14px; transition:color .14s ease, transform .1s ease}
+  .theme-btn{appearance:none; cursor:pointer; text-decoration:none; font-family:var(--mono); font-weight:700; font-size:12px; color:var(--muted-2); background:var(--card2); border:1px solid var(--line); border-radius:0; height:38px; padding:0 14px; display:inline-flex; align-items:center; justify-content:center; transition:color .14s ease, transform .1s ease}
+  .theme-btn.icon{width:38px; padding:0}
+  .theme-btn.icon svg{display:block}
   .theme-btn:active{transform:scale(.97)}
   @media (hover:hover) and (pointer:fine){
     .theme-btn:hover{color:var(--ink)}
@@ -123,7 +125,7 @@
       <div class="eyebrow" id="eyebrow">Learning Roadmaps · نقشه‌های راهِ یادگیری</div>
       <div class="topbar-actions">
         <button class="theme-btn" id="langBtn" aria-label="Switch language">English</button>
-        <button class="theme-btn" id="themeBtn">حالت تیره</button>
+        <button class="theme-btn icon" id="themeBtn" aria-label="Dark mode" title="Dark mode"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 1 0 20.354 15.354Z"/></svg></button>
       </div>
     </div>
     <h1 class="title" id="pageTitle">نقشه‌های راهِ یادگیری</h1>
@@ -343,10 +345,14 @@ function renderRoutes(){
 }
 
 /* theme */
+const sunSvg='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.6" fill="currentColor" stroke="none"/><path d="M12 2v2.6M12 19.4V22M4.93 4.93l1.84 1.84M17.23 17.23l1.84 1.84M2 12h2.6M19.4 12H22M4.93 19.07l1.84-1.84M17.23 6.77l1.84-1.84"/></svg>';
+const moonSvg='<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 1 0 20.354 15.354Z"/></svg>';
 const themeBtn=document.getElementById("themeBtn");
 function applyTheme(t){
   document.documentElement.setAttribute("data-theme",t);
-  themeBtn.textContent = t==="dark" ? S("light") : S("dark");
+  const lbl = t==="dark" ? S("light") : S("dark");
+  themeBtn.innerHTML = t==="dark" ? sunSvg : moonSvg;
+  themeBtn.setAttribute("aria-label",lbl); themeBtn.title=lbl;
   if(window.__refreshCursorFxColors) window.__refreshCursorFxColors();
 }
 async function loadTheme(){
