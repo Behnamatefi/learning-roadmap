@@ -4,7 +4,7 @@ Two self-contained, bilingual (Persian ⇄ English) HTML learning trackers plus 
 
 ## Files
 
-- `index.html` — router/landing page. Links to both trackers from a static `ROUTES` array. Storage keys `router-{theme,lang}`. ~20KB.
+- `index.html` — router/landing page. Links to both trackers from a static `ROUTES` array. ~20KB.
 - `ai-pm-roadmap-tracker-v1.html` — Project management from zero → managing AI projects. 4 sections: Roadmap (8 levels, 54 items), Case Studies (10 real AI cases), Library (9 books with summaries), Toolbox (14 tools). ~147KB.
 - `design-roadmap-tracker-v10.html` — Product design from zero → pro. 3 sections: Roadmap (10 levels), UI Rebuild Lab (33 base64-embedded JPEGs with download/copy buttons), Toolbox (17 tools). ~1.9MB (images).
 - `README.md` — repo readme. GitHub repo: `Behnamatefi/learning-roadmap`.
@@ -19,7 +19,7 @@ Single `<script>` at end of `<body>`, ordered: helpers (`toFa`, `esc`, storage s
 - `lang` global (`"fa"`/`"en"`); `applyLang()` sets `dir`/`lang` attrs, rewrites static DOM text by element id, then re-renders everything. `locNum()` converts digits to Persian only in fa mode. Accessors: `S(key)`, `trLevel/trItem/trPrompt/...`.
 - **Rule: any content edit must touch BOTH the Persian array and the matching EN dict entry.** A missing EN entry silently falls back to Persian.
 
-**Storage:** `window.storage` async API (Claude artifact environment) with a localStorage shim so it also persists on GitHub Pages / file://. Keys: `pm-roadmap-{progress,theme,lang}`, `design-roadmap-{progress,theme,lang}`, `router-{theme,lang}`. All three files carry the shim.
+**Storage:** `window.storage` async API (Claude artifact environment) with a localStorage shim so it also persists on GitHub Pages / file://. All three files carry the shim. `theme`/`lang` use **shared** keys (`roadmap-theme`, `roadmap-lang`) so the choice carries across navigation between the router and either tracker; progress stays per-tracker (`pm-roadmap-progress`, `design-roadmap-progress`).
 
 **Videos/links:** `VIDEOS` (by item id, `{url, fa, en}` label pair) and `TOOL_VIDEOS` (by tool name) are merged into resources at render time — never edit resource arrays to add videos; add to these maps.
 

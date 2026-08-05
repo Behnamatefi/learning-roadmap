@@ -263,8 +263,9 @@ if(!window.storage){
 })();
 
 /* ==================== i18n ==================== */
-const KEY_THEME="router-theme";
-const KEY_LANG="router-lang";
+/* shared with the tracker pages so theme/language carry across navigation */
+const KEY_THEME="roadmap-theme";
+const KEY_LANG="roadmap-lang";
 let lang="en";
 const locNum = s => lang==="fa" ? toFa(s) : String(s);
 

@@ -444,7 +444,8 @@ if(!window.storage){
 })();
 
 /* ==================== i18n ==================== */
-const KEY_LANG="design-roadmap-lang";
+/* shared with index.html/the other tracker so theme/language carry across navigation */
+const KEY_LANG="roadmap-lang";
 let lang="en";
 const locNum = s => lang==="fa" ? toFa(s) : String(s);
 
@@ -1131,7 +1132,7 @@ const IMGS={};
 MOCK_STEPS.forEach(st=>st.designs.forEach(d=>{ IMGS[d.id]=d.img; }));
 
 const KEY_PROG="design-roadmap-progress";
-const KEY_THEME="design-roadmap-theme";
+const KEY_THEME="roadmap-theme";
 let done={}, memOnly=false;
 const openState={};
 
