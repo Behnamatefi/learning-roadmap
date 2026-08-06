@@ -17,6 +17,8 @@
     --green-soft:rgba(138,134,125,.10); --green-line:rgba(138,134,125,.30);
     --coral-soft:rgba(240,112,62,.12); --coral-line:rgba(240,112,62,.34);
     --amber-soft:rgba(87,83,78,.08); --amber-line:rgba(87,83,78,.26);
+    --vid:#C4453A; --vid-soft:rgba(196,69,58,.09); --vid-line:rgba(196,69,58,.30);
+    --article:#A8841A; --article-soft:rgba(168,132,26,.09); --article-line:rgba(168,132,26,.30);
     --sig:#F03E10; --sig-press:#D63407; --sig-soft:#F0703E; --sig-ink:#111110;
     --shadow:0 0 0 0 transparent;
     --node-track:#D8D5CE;
@@ -31,6 +33,8 @@
     --green-soft:rgba(161,156,147,.14); --green-line:rgba(161,156,147,.32);
     --coral-soft:rgba(255,107,61,.14); --coral-line:rgba(255,107,61,.36);
     --amber-soft:rgba(201,197,189,.10); --amber-line:rgba(201,197,189,.28);
+    --vid:#E8776C; --vid-soft:rgba(232,119,108,.12); --vid-line:rgba(232,119,108,.32);
+    --article:#E8C547; --article-soft:rgba(232,197,71,.12); --article-line:rgba(232,197,71,.32);
     --sig:#FF4514; --sig-press:#E63D0F; --sig-soft:#FF6B3D; --sig-ink:#0A0A0A;
     --shadow:0 0 0 0 transparent;
     --node-track:#262523;
@@ -163,6 +167,12 @@
   .btn{cursor:pointer; font-family:var(--body); font-size:12.5px; font-weight:700; color:var(--violet); background:var(--card); text-decoration:none; border:1px solid var(--line); padding:6px 12px; border-radius:0; transition:.16s; white-space:nowrap; display:inline-block}
   .btn:hover{border-color:var(--violet); background:var(--violet-soft)}
   .btn.copy{border-style:dashed}
+  /* Video links: pale red. Article/book links (any plain .btn that isn't a
+     video, the copy-prompt action, or a tool's own site button): pale yellow. */
+  .btn.vid{color:var(--vid); border-color:var(--vid-line); background:var(--vid-soft)}
+  .btn.vid:hover{border-color:var(--vid); background:var(--vid-soft)}
+  .btn:not(.vid):not(.copy):not(.site){color:var(--article); border-color:var(--article-line); background:var(--article-soft)}
+  .btn:not(.vid):not(.copy):not(.site):hover{border-color:var(--article); background:var(--article-soft)}
 
   /* Sections & tools */
   .sec-head{margin:34px 0 14px; font-family:var(--display); font-weight:800; font-size:22px; display:flex; align-items:center; gap:10px; background:var(--card2); border-block:1px solid var(--line); padding:14px 16px; border-radius:0}
@@ -1369,7 +1379,7 @@ function renderTools(){
       <div class="tool-top"><span class="tool-name">${t.name}</span><span class="tcat">${cat}</span></div>
       <div class="tool-desc">${desc}</div>
       <div class="tool-actions">
-        <a class="btn" href="${t.site}" target="_blank" rel="noopener">${S("siteBtn")} ↗</a>
+        <a class="btn site" href="${t.site}" target="_blank" rel="noopener">${S("siteBtn")} ↗</a>
         <a class="btn vid" href="${vurl}" target="_blank" rel="noopener">${isYT?S("videoBtn"):S("docsBtn")} ↗</a>
       </div>
     </div>`;
