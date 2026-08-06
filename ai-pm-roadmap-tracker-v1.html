@@ -374,6 +374,7 @@ if(!window.storage){
   new ResizeObserver(rebuild).observe(canvas);
 
   let mouseX=-1e4, mouseY=-1e4, trailX=-1e4, trailY=-1e4;
+  let driftCX=w/2, driftCY=h/2;
 
   if(fine){
     const prevCursor=document.documentElement.style.cursor;
@@ -398,8 +399,15 @@ if(!window.storage){
   } else {
     /* No hover on this device (touch/coarse pointer) — there is no cursor to
        follow, so a slow, smooth, self-running path drives the trail instead,
-       keeping the effect visible rather than silently disabled. */
+       keeping the effect visible rather than silently disabled. It starts
+       centered behind the title, where it's immediately visible, and drifts
+       gently around that spot rather than wandering off across the page. */
     canvas.style.opacity="1";
+    const titleEl=document.getElementById("pageTitle");
+    if(titleEl){
+      const tr=titleEl.getBoundingClientRect();
+      driftCX=tr.left+tr.width/2; driftCY=tr.top+tr.height/2;
+    }
   }
 
   let visible=true;
@@ -414,8 +422,8 @@ if(!window.storage){
     const t=now/1000;
     let moving=false;
     if(!fine){
-      mouseX=w/2+Math.sin(t*.15)*w*.36;
-      mouseY=h/2+Math.sin(t*.11)*h*.32+Math.cos(t*.07)*h*.14;
+      mouseX=driftCX+Math.sin(t*.15)*w*.22;
+      mouseY=driftCY+Math.sin(t*.11)*h*.10+Math.cos(t*.07)*h*.06;
       trailX=mouseX; trailY=mouseY; moving=true;
     }
     else if(mouseX<=-1e4){ trailX=-1e4; trailY=-1e4; }
