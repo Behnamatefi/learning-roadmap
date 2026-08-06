@@ -360,7 +360,7 @@ if(!window.storage){
   if(!canvas) return;
   const fine=window.matchMedia && matchMedia("(hover:hover) and (pointer:fine)").matches;
   const reduce=window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(!fine || reduce) return;
+  if(reduce) return;
   const ctx=canvas.getContext("2d");
   if(!ctx) return;
 
@@ -388,25 +388,33 @@ if(!window.storage){
   new ResizeObserver(rebuild).observe(canvas);
 
   let mouseX=-1e4, mouseY=-1e4, trailX=-1e4, trailY=-1e4;
-  const prevCursor=document.documentElement.style.cursor;
-  let cursorHidden=false;
-  function hideNativeCursor(hide){
-    if(hide===cursorHidden) return;
-    cursorHidden=hide;
-    document.documentElement.style.cursor = hide ? "none" : prevCursor;
+
+  if(fine){
+    const prevCursor=document.documentElement.style.cursor;
+    let cursorHidden=false;
+    var hideNativeCursor=function(hide){
+      if(hide===cursorHidden) return;
+      cursorHidden=hide;
+      document.documentElement.style.cursor = hide ? "none" : prevCursor;
+    };
+    const onMove=e=>{
+      const rect=canvas.getBoundingClientRect();
+      const inside = e.clientX>=rect.left && e.clientX<=rect.right && e.clientY>=rect.top && e.clientY<=rect.bottom;
+      if(inside){
+        const sx=rect.width>0?canvas.clientWidth/rect.width:1, sy=rect.height>0?canvas.clientHeight/rect.height:1;
+        mouseX=(e.clientX-rect.left)*sx; mouseY=(e.clientY-rect.top)*sy;
+        canvas.style.opacity="1";
+      } else { mouseX=-1e4; mouseY=-1e4; }
+      hideNativeCursor(inside);
+    };
+    window.addEventListener("pointermove",onMove,{passive:true});
+    document.addEventListener("pointerleave",()=>{ mouseX=-1e4; mouseY=-1e4; hideNativeCursor(false); });
+  } else {
+    /* No hover on this device (touch/coarse pointer) — there is no cursor to
+       follow, so a slow, smooth, self-running path drives the trail instead,
+       keeping the effect visible rather than silently disabled. */
+    canvas.style.opacity="1";
   }
-  function onMove(e){
-    const rect=canvas.getBoundingClientRect();
-    const inside = e.clientX>=rect.left && e.clientX<=rect.right && e.clientY>=rect.top && e.clientY<=rect.bottom;
-    if(inside){
-      const sx=rect.width>0?canvas.clientWidth/rect.width:1, sy=rect.height>0?canvas.clientHeight/rect.height:1;
-      mouseX=(e.clientX-rect.left)*sx; mouseY=(e.clientY-rect.top)*sy;
-      canvas.style.opacity="1";
-    } else { mouseX=-1e4; mouseY=-1e4; }
-    hideNativeCursor(inside);
-  }
-  window.addEventListener("pointermove",onMove,{passive:true});
-  document.addEventListener("pointerleave",()=>{ mouseX=-1e4; mouseY=-1e4; hideNativeCursor(false); });
 
   let visible=true;
   new IntersectionObserver(es=>{ visible=(es[0]?es[0].isIntersecting:true) && !document.hidden; },{threshold:0}).observe(canvas);
@@ -419,7 +427,12 @@ if(!window.storage){
     const dt=Math.min(.05,Math.max(0,(now-last)/1000)); last=now;
     const t=now/1000;
     let moving=false;
-    if(mouseX<=-1e4){ trailX=-1e4; trailY=-1e4; }
+    if(!fine){
+      mouseX=w/2+Math.sin(t*.15)*w*.36;
+      mouseY=h/2+Math.sin(t*.11)*h*.32+Math.cos(t*.07)*h*.14;
+      trailX=mouseX; trailY=mouseY; moving=true;
+    }
+    else if(mouseX<=-1e4){ trailX=-1e4; trailY=-1e4; }
     else if(trailX<=-1e4){ trailX=mouseX; trailY=mouseY; }
     else{
       const dx=mouseX-trailX, dy=mouseY-trailY;
